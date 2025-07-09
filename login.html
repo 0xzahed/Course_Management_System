@@ -19,6 +19,7 @@
         }
 
         .glass-effect {
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.1);
         }
@@ -144,7 +145,8 @@
                             placeholder="Enter your password">
                         <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60"></i>
                         <button type="button" id="togglePassword"
-                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white">
+                            class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white"
+                            aria-label="Show or hide password" title="Show or hide password">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -172,7 +174,7 @@
             <!-- Register Link -->
             <div class="text-center mt-6">
                 <p class="text-white/80">Don't have an account?
-                    <a href="registretion.html" class="text-indigo-200 hover:text-white font-medium underline">Create
+                    <a href="registration.html" class="text-indigo-200 hover:text-white font-medium underline">Create
                         Account</a>
                 </p>
             </div>
