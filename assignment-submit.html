@@ -1,11 +1,889 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment Submit</title>
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit Assignment - React Project | EduManage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+      .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      .upload-area {
+        transition: all 0.3s ease;
+      }
+      .upload-area.dragover {
+        border-color: #4f46e5;
+        background-color: #eef2ff;
+      }
+      .file-item {
+        animation: slideIn 0.3s ease;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .countdown-timer {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Header -->
+    <nav
+      class="bg-white shadow-lg border-b border-gray-200 fixed w-full top-0 z-40"
+    >
+      <div class="px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Back Button & Assignment Title -->
+          <div class="flex items-center">
+            <button
+              onclick="goBack()"
+              class="p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 mr-3"
+            >
+              <i class="fas fa-arrow-left text-xl"></i>
+            </button>
+            <div class="flex items-center">
+              <i class="fas fa-tasks text-2xl text-indigo-600 mr-3"></i>
+              <div>
+                <h1 class="text-lg font-bold text-gray-800">
+                  Submit Assignment
+                </h1>
+                <p class="text-xs text-gray-500">Web Development • CSE 4101</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save & Submit Actions -->
+          <div class="flex items-center space-x-3">
+            <button
+              id="saveDraftBtn"
+              class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
+            >
+              <i class="fas fa-save mr-2"></i>Save Draft
+            </button>
+            <button
+              id="submitBtn"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium"
+            >
+              <i class="fas fa-paper-plane mr-2"></i>Submit Assignment
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-16 min-h-screen">
+      <!-- Assignment Header -->
+      <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Assignment Info -->
+            <div class="lg:col-span-3">
+              <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                React Project Submission
+              </h1>
+              <p class="text-gray-600 mb-4">
+                Create a complete React application with components, state
+                management, and API integration. This project will demonstrate
+                your understanding of modern React development practices.
+              </p>
+
+              <!-- Assignment Meta -->
+              <div
+                class="flex flex-wrap items-center gap-4 text-sm text-gray-600"
+              >
+                <div class="flex items-center">
+                  <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i>
+                  <span>Assigned: Oct 10, 2024</span>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-clock mr-2 text-red-600"></i>
+                  <span>Due: Oct 25, 2024 11:59 PM</span>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-star mr-2 text-yellow-600"></i>
+                  <span>Max Points: 100</span>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-users mr-2 text-green-600"></i>
+                  <span>Individual Assignment</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Due Date Countdown -->
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+              <div class="text-center">
+                <i
+                  class="fas fa-exclamation-triangle text-red-500 text-2xl mb-2"
+                ></i>
+                <p class="text-sm text-red-700 font-medium mb-2">
+                  Time Remaining
+                </p>
+                <div id="countdown" class="countdown-timer">
+                  <div class="text-2xl font-bold text-red-600">2d 14h 32m</div>
+                </div>
+                <p class="text-xs text-red-600 mt-2">Due: Oct 25, 11:59 PM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Left Column - Submission Form -->
+          <div class="lg:col-span-2 space-y-8">
+            <!-- File Upload Section -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Upload Your Files
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">
+                  Upload your React project files (ZIP, RAR, or individual
+                  files)
+                </p>
+              </div>
+              <div class="p-6">
+                <!-- Upload Area -->
+                <div
+                  id="uploadArea"
+                  class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-indigo-400 hover:bg-indigo-50 cursor-pointer transition-all"
+                >
+                  <div class="space-y-4">
+                    <div
+                      class="mx-auto w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center"
+                    >
+                      <i
+                        class="fas fa-cloud-upload-alt text-indigo-600 text-2xl"
+                      ></i>
+                    </div>
+                    <div>
+                      <p class="text-lg font-medium text-gray-800">
+                        Drag and drop your files here
+                      </p>
+                      <p class="text-sm text-gray-600">
+                        or
+                        <span class="text-indigo-600 font-medium"
+                          >browse to choose files</span
+                        >
+                      </p>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <p>
+                        Supported formats: ZIP, RAR, JS, JSX, HTML, CSS, JSON
+                      </p>
+                      <p>Maximum file size: 50MB per file</p>
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    class="hidden"
+                    multiple
+                    accept=".zip,.rar,.js,.jsx,.html,.css,.json,.md,.txt"
+                  />
+                </div>
+
+                <!-- Uploaded Files List -->
+                <div id="filesList" class="mt-6 space-y-3 hidden">
+                  <h4 class="font-medium text-gray-800">Uploaded Files</h4>
+                  <div id="filesContainer" class="space-y-2">
+                    <!-- Files will be dynamically added here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project Description -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Project Description
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">
+                  Describe your project and any special instructions
+                </p>
+              </div>
+              <div class="p-6">
+                <textarea
+                  id="projectDescription"
+                  rows="6"
+                  class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Describe your React project:
+- What features did you implement?
+- Which technologies did you use?
+- Any challenges you faced?
+- Instructions for running the project
+- Any additional notes for the instructor"
+                ></textarea>
+                <div
+                  class="mt-2 flex justify-between items-center text-sm text-gray-500"
+                >
+                  <span>Optional but recommended</span>
+                  <span id="charCount">0/1000 characters</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project URL (Optional) -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Live Demo URL
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">
+                  If you deployed your project, provide the live URL
+                </p>
+              </div>
+              <div class="p-6">
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Live Demo URL</label
+                    >
+                    <input
+                      type="url"
+                      id="liveUrl"
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="https://your-project.netlify.app"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >GitHub Repository URL</label
+                    >
+                    <input
+                      type="url"
+                      id="githubUrl"
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="https://github.com/username/project-name"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submission History -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Submission History
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">
+                  Your previous submission attempts
+                </p>
+              </div>
+              <div class="p-6">
+                <div class="space-y-4">
+                  <!-- Draft Submission -->
+                  <div
+                    class="flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
+                  >
+                    <div class="flex items-center">
+                      <i class="fas fa-edit text-yellow-600 mr-3"></i>
+                      <div>
+                        <p class="font-medium text-gray-800">Draft Saved</p>
+                        <p class="text-sm text-gray-600">
+                          Oct 22, 2024 at 3:45 PM
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      class="text-sm bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full"
+                      >Draft</span
+                    >
+                  </div>
+
+                  <!-- No Previous Submissions -->
+                  <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-inbox text-4xl mb-4"></i>
+                    <p>No previous submissions</p>
+                    <p class="text-sm">This will be your first submission</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column - Assignment Details -->
+          <div class="space-y-6">
+            <!-- Assignment Requirements -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Requirements
+                </h3>
+              </div>
+              <div class="p-6">
+                <div class="space-y-4">
+                  <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                    <div>
+                      <p class="font-medium text-gray-800">React Components</p>
+                      <p class="text-sm text-gray-600">
+                        Create at least 5 functional components
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                    <div>
+                      <p class="font-medium text-gray-800">State Management</p>
+                      <p class="text-sm text-gray-600">
+                        Use useState and useEffect hooks
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                    <div>
+                      <p class="font-medium text-gray-800">API Integration</p>
+                      <p class="text-sm text-gray-600">
+                        Fetch data from external API
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                    <div>
+                      <p class="font-medium text-gray-800">Responsive Design</p>
+                      <p class="text-sm text-gray-600">
+                        Mobile-friendly layout
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start">
+                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                    <div>
+                      <p class="font-medium text-gray-800">Code Quality</p>
+                      <p class="text-sm text-gray-600">Clean, commented code</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grading Rubric -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="p-6 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Grading Rubric
+                </h3>
+              </div>
+              <div class="p-6">
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Functionality</span>
+                    <span class="font-medium text-gray-800">40 points</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Code Quality</span>
+                    <span class="font-medium text-gray-800">25 points</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Design & UI</span>
+                    <span class="font-medium text-gray-800">20 points</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Documentation</span>
+                    <span class="font-medium text-gray-800">10 points</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-700">Creativity</span>
+                    <span class="font-medium text-gray-800">5 points</span>
+                  </div>
+                  <hr class="my-2" />
+                  <div class="flex justify-between items-center font-semibold">
+                    <span class="text-gray-800">Total</span>
+                    <span class="text-gray-800">100 points</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submission Guidelines -->
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <h3 class="text-lg font-semibold text-blue-800 mb-4">
+                <i class="fas fa-info-circle mr-2"></i>Submission Guidelines
+              </h3>
+              <div class="space-y-3 text-sm text-blue-700">
+                <div class="flex items-start">
+                  <i class="fas fa-dot-circle mr-2 mt-1 text-xs"></i>
+                  <p>Submit all project files in a ZIP archive</p>
+                </div>
+                <div class="flex items-start">
+                  <i class="fas fa-dot-circle mr-2 mt-1 text-xs"></i>
+                  <p>Include a README.md with setup instructions</p>
+                </div>
+                <div class="flex items-start">
+                  <i class="fas fa-dot-circle mr-2 mt-1 text-xs"></i>
+                  <p>Make sure your project runs without errors</p>
+                </div>
+                <div class="flex items-start">
+                  <i class="fas fa-dot-circle mr-2 mt-1 text-xs"></i>
+                  <p>Late submissions will lose 10 points per day</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contact Instructor -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div class="p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                  Need Help?
+                </h3>
+                <div class="space-y-3">
+                  <button
+                    class="w-full p-3 text-left bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <i class="fas fa-envelope text-indigo-600 mr-3"></i>
+                    <span class="text-sm font-medium text-gray-800"
+                      >Email Instructor</span
+                    >
+                  </button>
+                  <button
+                    class="w-full p-3 text-left bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <i class="fas fa-comments text-green-600 mr-3"></i>
+                    <span class="text-sm font-medium text-gray-800"
+                      >Ask in Discussion</span
+                    >
+                  </button>
+                  <button
+                    class="w-full p-3 text-left bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <i class="fas fa-clock text-purple-600 mr-3"></i>
+                    <span class="text-sm font-medium text-gray-800"
+                      >Office Hours</span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submission Confirmation Modal -->
+    <div
+      id="confirmModal"
+      class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-xl max-w-md w-full p-6">
+        <div class="text-center">
+          <div
+            class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <i class="fas fa-check text-green-600 text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">
+            Confirm Submission
+          </h3>
+          <p class="text-gray-600 mb-6">
+            Are you sure you want to submit this assignment? You won't be able
+            to make changes after submission.
+          </p>
+          <div class="flex space-x-3">
+            <button
+              id="cancelSubmit"
+              class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmSubmit"
+              class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            >
+              Submit Assignment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // File upload functionality
+      const uploadArea = document.getElementById("uploadArea");
+      const fileInput = document.getElementById("fileInput");
+      const filesList = document.getElementById("filesList");
+      const filesContainer = document.getElementById("filesContainer");
+      let uploadedFiles = [];
+
+      // Click to upload
+      uploadArea.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      // Drag and drop functionality
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
+
+      uploadArea.addEventListener("dragleave", () => {
+        uploadArea.classList.remove("dragover");
+      });
+
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        const files = Array.from(e.dataTransfer.files);
+        handleFiles(files);
+      });
+
+      // File input change
+      fileInput.addEventListener("change", (e) => {
+        const files = Array.from(e.target.files);
+        handleFiles(files);
+      });
+
+      // Handle uploaded files
+      function handleFiles(files) {
+        files.forEach((file) => {
+          if (file.size > 50 * 1024 * 1024) {
+            // 50MB limit
+            alert(`File ${file.name} is too large. Maximum size is 50MB.`);
+            return;
+          }
+
+          uploadedFiles.push({
+            file: file,
+            id: Date.now() + Math.random(),
+            uploaded: false,
+          });
+        });
+
+        displayFiles();
+        simulateUpload();
+      }
+
+      // Display uploaded files
+      function displayFiles() {
+        if (uploadedFiles.length > 0) {
+          filesList.classList.remove("hidden");
+          filesContainer.innerHTML = "";
+
+          uploadedFiles.forEach((fileObj) => {
+            const fileItem = document.createElement("div");
+            fileItem.className =
+              "file-item flex items-center justify-between p-3 bg-gray-50 rounded-lg";
+
+            const fileIcon = getFileIcon(fileObj.file.name);
+            const fileSize = formatFileSize(fileObj.file.size);
+
+            fileItem.innerHTML = `
+                        <div class="flex items-center">
+                            <i class="${fileIcon} mr-3"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">${
+                                  fileObj.file.name
+                                }</p>
+                                <p class="text-xs text-gray-500">${fileSize}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            ${
+                              fileObj.uploaded
+                                ? '<i class="fas fa-check-circle text-green-500"></i>'
+                                : '<div class="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>'
+                            }
+                            <button onclick="removeFile('${
+                              fileObj.id
+                            }')" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+
+            filesContainer.appendChild(fileItem);
+          });
+        }
+      }
+
+      // Simulate file upload
+      function simulateUpload() {
+        uploadedFiles.forEach((fileObj) => {
+          if (!fileObj.uploaded) {
+            setTimeout(() => {
+              fileObj.uploaded = true;
+              displayFiles();
+            }, Math.random() * 2000 + 1000);
+          }
+        });
+      }
+
+      // Remove file
+      function removeFile(fileId) {
+        uploadedFiles = uploadedFiles.filter((f) => f.id !== fileId);
+        displayFiles();
+        if (uploadedFiles.length === 0) {
+          filesList.classList.add("hidden");
+        }
+      }
+
+      // Get file icon based on extension
+      function getFileIcon(filename) {
+        const ext = filename.split(".").pop().toLowerCase();
+        const icons = {
+          zip: "fas fa-file-archive text-yellow-600",
+          rar: "fas fa-file-archive text-yellow-600",
+          js: "fab fa-js-square text-yellow-500",
+          jsx: "fab fa-react text-blue-500",
+          html: "fab fa-html5 text-orange-500",
+          css: "fab fa-css3-alt text-blue-500",
+          json: "fas fa-code text-green-600",
+          md: "fab fa-markdown text-gray-600",
+          txt: "fas fa-file-alt text-gray-600",
+        };
+        return icons[ext] || "fas fa-file text-gray-500";
+      }
+
+      // Format file size
+      function formatFileSize(bytes) {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+      }
+
+      // Character count for description
+      const projectDescription = document.getElementById("projectDescription");
+      const charCount = document.getElementById("charCount");
+
+      projectDescription.addEventListener("input", function () {
+        const count = this.value.length;
+        charCount.textContent = `${count}/1000 characters`;
+
+        if (count > 1000) {
+          charCount.classList.add("text-red-500");
+          this.value = this.value.substring(0, 1000);
+        } else {
+          charCount.classList.remove("text-red-500");
+        }
+      });
+
+      // Countdown timer
+      function updateCountdown() {
+        const dueDate = new Date("2024-10-25T23:59:59");
+        const now = new Date();
+        const diff = dueDate - now;
+
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+          document.getElementById("countdown").innerHTML = `
+                    <div class="text-2xl font-bold text-red-600">${days}d ${hours}h ${minutes}m</div>
+                `;
+        } else {
+          document.getElementById("countdown").innerHTML = `
+                    <div class="text-2xl font-bold text-red-600">OVERDUE</div>
+                `;
+        }
+      }
+
+      // Update countdown every minute
+      updateCountdown();
+      setInterval(updateCountdown, 60000);
+
+      // Save draft functionality
+      document
+        .getElementById("saveDraftBtn")
+        .addEventListener("click", function () {
+          const description = projectDescription.value;
+          const liveUrl = document.getElementById("liveUrl").value;
+          const githubUrl = document.getElementById("githubUrl").value;
+
+          // Simulate saving draft
+          this.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+          this.disabled = true;
+
+          setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-check mr-2"></i>Draft Saved';
+            this.classList.add(
+              "bg-green-100",
+              "text-green-700",
+              "border-green-300"
+            );
+
+            setTimeout(() => {
+              this.innerHTML = '<i class="fas fa-save mr-2"></i>Save Draft';
+              this.classList.remove(
+                "bg-green-100",
+                "text-green-700",
+                "border-green-300"
+              );
+              this.disabled = false;
+            }, 2000);
+          }, 1000);
+        });
+
+      // Submit assignment functionality
+      const submitBtn = document.getElementById("submitBtn");
+      const confirmModal = document.getElementById("confirmModal");
+      const cancelSubmit = document.getElementById("cancelSubmit");
+      const confirmSubmit = document.getElementById("confirmSubmit");
+
+      submitBtn.addEventListener("click", function () {
+        if (uploadedFiles.length === 0) {
+          alert("Please upload at least one file before submitting.");
+          return;
+        }
+
+        confirmModal.classList.remove("hidden");
+      });
+
+      cancelSubmit.addEventListener("click", function () {
+        confirmModal.classList.add("hidden");
+      });
+
+      confirmSubmit.addEventListener("click", function () {
+        // Simulate submission
+        confirmModal.classList.add("hidden");
+
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+        submitBtn.disabled = true;
+
+        setTimeout(() => {
+          alert(
+            "Assignment submitted successfully! You will receive a confirmation email shortly."
+          );
+          // In a real app, this would redirect to a success page
+        }, 2000);
+      });
+
+      // Back button functionality
+      function goBack() {
+        if (
+          confirm(
+            "Are you sure you want to leave? Any unsaved changes will be lost."
+          )
+        ) {
+          // In a real app, this would navigate back
+          alert("Navigating back to course page...");
+        }
+      }
+
+      // Contact buttons functionality
+      document.querySelectorAll(".bg-gray-50").forEach((btn) => {
+        if (btn.querySelector(".fa-envelope")) {
+          btn.addEventListener("click", () => alert("Opening email client..."));
+        } else if (btn.querySelector(".fa-comments")) {
+          btn.addEventListener("click", () =>
+            alert("Opening discussion forum...")
+          );
+        } else if (btn.querySelector(".fa-clock")) {
+          btn.addEventListener("click", () =>
+            alert("Showing office hours schedule...")
+          );
+        }
+      });
+
+      // Auto-save functionality (every 30 seconds)
+      setInterval(() => {
+        const description = projectDescription.value;
+        const liveUrl = document.getElementById("liveUrl").value;
+        const githubUrl = document.getElementById("githubUrl").value;
+
+        if (description || liveUrl || githubUrl || uploadedFiles.length > 0) {
+          console.log("Auto-saving draft...");
+          // In a real app, this would save to the server
+        }
+      }, 30000);
+
+      // Warn before leaving page with unsaved changes
+      window.addEventListener("beforeunload", function (e) {
+        const description = projectDescription.value;
+        const liveUrl = document.getElementById("liveUrl").value;
+        const githubUrl = document.getElementById("githubUrl").value;
+
+        if (description || liveUrl || githubUrl || uploadedFiles.length > 0) {
+          e.preventDefault();
+          e.returnValue = "";
+        }
+      });
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'95ae8b6615fd3366',t:'MTc1MTc5OTA2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
 </html>
