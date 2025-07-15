@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Assignment | Teacher Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .form-section {
+            transition: all 0.3s ease;
+        }
+        
+        .form-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .step-indicator.completed {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .file-drop-zone {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        
+        .file-drop-zone:hover {
+            border-color: #6366f1;
+            background-color: #f8fafc;
+        }
+        
+        .file-drop-zone.dragover {
+            border-color: #4f46e5;
+            background-color: #eef2ff;
+        }
+        
+        .rubric-row:hover {
+            background-color: #f8fafc;
+        }
+        
+        .preview-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .notification {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <button onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <i class="fas fa-tasks text-2xl text-indigo-600 mr-3"></i>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Create Assignment</h1>
+                        <p class="text-xs text-gray-500">Design and publish new assignment</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="saveDraft()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                        <i class="fas fa-save mr-2"></i>Save Draft
+                    </button>
+                    <button onclick="previewAssignment()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                        <i class="fas fa-eye mr-2"></i>Preview
+                    </button>
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-gray-800">Dr. Rahman Khan</p>
+                        <p class="text-xs text-gray-500">Computer Science Dept.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center space-x-4">
+                <div class="step-indicator active flex items-center justify-center w-10 h-10 rounded-full font-semibold">
+                    1
+                </div>
+                <div class="w-16 h-1 bg-gray-200 rounded"></div>
+                <div class="step-indicator flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-600 font-semibold">
+                    2
+                </div>
+                <div class="w-16 h-1 bg-gray-200 rounded"></div>
+                <div class="step-indicator flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-600 font-semibold">
+                    3
+                </div>
+            </div>
+            <div class="flex justify-center mt-2 space-x-20">
+                <span class="text-sm font-medium text-indigo-600">Basic Info</span>
+                <span class="text-sm text-gray-500">Content & Files</span>
+                <span class="text-sm text-gray-500">Settings & Publish</span>
+            </div>
+        </div>
+
+        <form id="assignmentForm" class="space-y-8">
+            <!-- Step 1: Basic Information -->
+            <div id="step1" class="step-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Main Form -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Assignment Title -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-heading text-indigo-600 mr-2"></i>
+                                Assignment Title & Description
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Assignment Title *</label>
+                                    <input type="text" id="assignmentTitle" required
+                                           placeholder="e.g., Data Structures Final Project"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
+                                    <textarea id="shortDescription" rows="3" 
+                                              placeholder="Brief overview of the assignment..."
+                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course & Category -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-book text-indigo-600 mr-2"></i>
+                                Course & Category
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Course *</label>
+                                    <select id="courseSelect" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                        <option value="">Choose a course...</option>
+                                        <option value="CSE201">CSE 201 - Data Structures & Algorithms</option>
+                                        <option value="CSE301">CSE 301 - Database Management Systems</option>
+                                        <option value="CSE401">CSE 401 - Machine Learning</option>
+                                        <option value="CSE501">CSE 501 - Software Engineering</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Assignment Type</label>
+                                    <select id="assignmentType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                        <option value="homework">Homework</option>
+                                        <option value="project">Project</option>
+                                        <option value="quiz">Quiz</option>
+                                        <option value="exam">Exam</option>
+                                        <option value="lab">Lab Work</option>
+                                        <option value="presentation">Presentation</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dates & Points -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-calendar-alt text-indigo-600 mr-2"></i>
+                                Dates & Grading
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Assign Date *</label>
+                                    <input type="datetime-local" id="assignDate" required
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Due Date *</label>
+                                    <input type="datetime-local" id="dueDate" required
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Total Points *</label>
+                                    <input type="number" id="totalPoints" required min="1" max="1000" value="100"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="allowLateSubmission" class="rounded mr-2">
+                                        <span class="text-sm text-gray-700">Allow late submissions</span>
+                                    </label>
+                                </div>
+                                <div id="latePenaltySection" class="hidden">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Late Penalty (%/day)</label>
+                                    <input type="number" id="latePenalty" min="0" max="100" value="10"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h4 class="font-semibold text-gray-800 mb-4">Quick Actions</h4>
+                            <div class="space-y-3">
+                                <button type="button" onclick="useTemplate()" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">
+                                    <i class="fas fa-copy mr-2"></i>Use Template
+                                </button>
+                                <button type="button" onclick="importFromFile()" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">
+                                    <i class="fas fa-file-import mr-2"></i>Import from File
+                                </button>
+                                <button type="button" onclick="duplicateAssignment()" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">
+                                    <i class="fas fa-clone mr-2"></i>Duplicate Existing
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Assignment Stats -->
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl p-6">
+                            <h4 class="font-semibold mb-4">Assignment Overview</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Course:</span>
+                                    <span id="selectedCourse">Not selected</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Type:</span>
+                                    <span id="selectedType">Homework</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Points:</span>
+                                    <span id="selectedPoints">100</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Status:</span>
+                                    <span class="px-2 py-1 bg-yellow-500 text-yellow-900 rounded-full text-xs">Draft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Templates -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h4 class="font-semibold text-gray-800 mb-4">Recent Templates</h4>
+                            <div class="space-y-2">
+                                <button onclick="loadTemplate('project')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                    <div class="font-medium text-sm text-gray-800">Programming Project</div>
+                                    <div class="text-xs text-gray-500">Used 3 times</div>
+                                </button>
+                                <button onclick="loadTemplate('quiz')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                    <div class="font-medium text-sm text-gray-800">Weekly Quiz</div>
+                                    <div class="text-xs text-gray-500">Used 8 times</div>
+                                </button>
+                                <button onclick="loadTemplate('lab')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                    <div class="font-medium text-sm text-gray-800">Lab Assignment</div>
+                                    <div class="text-xs text-gray-500">Used 5 times</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Content & Files -->
+            <div id="step2" class="step-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Assignment Instructions -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-file-alt text-indigo-600 mr-2"></i>
+                                Assignment Instructions
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="border border-gray-200 rounded-lg">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 border-b border-gray-200">
+                                        <div class="flex space-x-2">
+                                            <button type="button" onclick="formatText('bold')" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded">
+                                                <i class="fas fa-bold"></i>
+                                            </button>
+                                            <button type="button" onclick="formatText('italic')" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded">
+                                                <i class="fas fa-italic"></i>
+                                            </button>
+                                            <button type="button" onclick="formatText('underline')" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded">
+                                                <i class="fas fa-underline"></i>
+                                            </button>
+                                            <div class="border-l border-gray-300 mx-2"></div>
+                                            <button type="button" onclick="formatText('list')" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded">
+                                                <i class="fas fa-list-ul"></i>
+                                            </button>
+                                            <button type="button" onclick="formatText('link')" class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded">
+                                                <i class="fas fa-link"></i>
+                                            </button>
+                                        </div>
+                                        <span class="text-xs text-gray-500">Rich Text Editor</span>
+                                    </div>
+                                    <textarea id="assignmentInstructions" rows="12" 
+                                              placeholder="Write detailed instructions for your assignment here...
+
+Example:
+1. Complete the programming task using Python
+2. Submit your code files and documentation
+3. Include test cases and results
+4. Follow the coding standards discussed in class"
+                                              class="w-full p-4 border-0 focus:ring-0 resize-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- File Attachments -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-paperclip text-indigo-600 mr-2"></i>
+                                Attachments & Resources
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <!-- File Upload Area -->
+                                <div class="file-drop-zone rounded-lg p-8 text-center cursor-pointer" onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                    <p class="text-lg font-medium text-gray-700 mb-2">Drop files here or click to upload</p>
+                                    <p class="text-sm text-gray-500">Support: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP (Max: 50MB each)</p>
+                                    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" class="hidden">
+                                </div>
+
+                                <!-- Uploaded Files List -->
+                                <div id="uploadedFiles" class="space-y-2"></div>
+
+                                <!-- External Links -->
+                                <div class="border-t border-gray-200 pt-4">
+                                    <h4 class="font-medium text-gray-800 mb-3">External Resources</h4>
+                                    <div id="externalLinks" class="space-y-2">
+                                        <div class="flex space-x-2">
+                                            <input type="url" placeholder="https://example.com" 
+                                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                            <input type="text" placeholder="Link title" 
+                                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                            <button type="button" onclick="addExternalLink()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submission Requirements -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-clipboard-check text-indigo-600 mr-2"></i>
+                                Submission Requirements
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Submission Type</label>
+                                        <select id="submissionType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                            <option value="file">File Upload</option>
+                                            <option value="text">Text Entry</option>
+                                            <option value="both">File Upload + Text</option>
+                                            <option value="url">Website URL</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Max File Size (MB)</label>
+                                        <input type="number" id="maxFileSize" min="1" max="100" value="10"
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Allowed File Types</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded mr-2" value="pdf" checked>
+                                            <span class="text-sm">PDF</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded mr-2" value="doc">
+                                            <span class="text-sm">DOC/DOCX</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded mr-2" value="ppt">
+                                            <span class="text-sm">PPT/PPTX</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded mr-2" value="zip">
+                                            <span class="text-sm">ZIP</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded mr-2" value="img">
+                                            <span class="text-sm">Images</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded mr-2" value="code">
+                                            <span class="text-sm">Code Files</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Content Preview -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h4 class="font-semibold text-gray-800 mb-4">Content Preview</h4>
+                            <div class="text-sm text-gray-600 space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Instructions:</span>
+                                    <span id="instructionLength">0 words</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Attachments:</span>
+                                    <span id="attachmentCount">0 files</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>External Links:</span>
+                                    <span id="linkCount">0 links</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content Templates -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h4 class="font-semibold text-gray-800 mb-4">Content Templates</h4>
+                            <div class="space-y-2">
+                                <button onclick="insertTemplate('programming')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                    <div class="font-medium text-sm text-gray-800">Programming Assignment</div>
+                                    <div class="text-xs text-gray-500">Code submission template</div>
+                                </button>
+                                <button onclick="insertTemplate('essay')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                    <div class="font-medium text-sm text-gray-800">Essay Assignment</div>
+                                    <div class="text-xs text-gray-500">Written work template</div>
+                                </button>
+                                <button onclick="insertTemplate('research')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                    <div class="font-medium text-sm text-gray-800">Research Project</div>
+                                    <div class="text-xs text-gray-500">Research paper template</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Settings & Publish -->
+            <div id="step3" class="step-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Grading Settings -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-star text-indigo-600 mr-2"></i>
+                                Grading & Rubric
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Grading Type</label>
+                                        <select id="gradingType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                            <option value="points">Points</option>
+                                            <option value="percentage">Percentage</option>
+                                            <option value="letter">Letter Grade</option>
+                                            <option value="rubric">Rubric</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Grade Display</label>
+                                        <select id="gradeDisplay" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                                            <option value="immediately">Show Immediately</option>
+                                            <option value="after_due">After Due Date</option>
+                                            <option value="manual">Manual Release</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Rubric Builder -->
+                                <div id="rubricSection" class="border border-gray-200 rounded-lg p-4">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h4 class="font-medium text-gray-800">Grading Rubric</h4>
+                                        <button type="button" onclick="addRubricCriteria()" class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">
+                                            <i class="fas fa-plus mr-1"></i>Add Criteria
+                                        </button>
+                                    </div>
+                                    
+                                    <div id="rubricCriteria" class="space-y-3">
+                                        <div class="rubric-row grid grid-cols-1 md:grid-cols-4 gap-3 p-3 border border-gray-200 rounded-lg">
+                                            <input type="text" placeholder="Criteria name" class="px-3 py-2 border border-gray-300 rounded-lg">
+                                            <input type="number" placeholder="Points" min="1" class="px-3 py-2 border border-gray-300 rounded-lg">
+                                            <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                                                <option>Excellent</option>
+                                                <option>Good</option>
+                                                <option>Fair</option>
+                                                <option>Poor</option>
+                                            </select>
+                                            <button type="button" onclick="removeRubricCriteria(this)" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Availability Settings -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-users text-indigo-600 mr-2"></i>
+                                Availability & Access
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Assign To</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center">
+                                            <input type="radio" name="assignTo" value="all" checked class="mr-2">
+                                            <span class="text-sm">All Students in Course</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="assignTo" value="groups" class="mr-2">
+                                            <span class="text-sm">Specific Groups</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="radio" name="assignTo" value="individuals" class="mr-2">
+                                            <span class="text-sm">Individual Students</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="requirePassword" class="rounded mr-2">
+                                            <span class="text-sm text-gray-700">Require Access Password</span>
+                                        </label>
+                                        <input type="password" id="accessPassword" placeholder="Enter password" 
+                                               class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 hidden">
+                                    </div>
+                                    <div>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" id="limitAttempts" class="rounded mr-2">
+                                            <span class="text-sm text-gray-700">Limit Submission Attempts</span>
+                                        </label>
+                                        <input type="number" id="maxAttempts" min="1" max="10" value="3" 
+                                               class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 hidden">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Settings -->
+                        <div class="form-section bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                                <i class="fas fa-bell text-indigo-600 mr-2"></i>
+                                Notifications & Reminders
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="notifyOnAssign" checked class="rounded mr-2">
+                                        <span class="text-sm text-gray-700">Notify students when assigned</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="notifyOnSubmission" class="rounded mr-2">
+                                        <span class="text-sm text-gray-700">Notify me on submissions</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="sendReminders" checked class="rounded mr-2">
+                                        <span class="text-sm text-gray-700">Send due date reminders</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" id="notifyLateSubmission" class="rounded mr-2">
+                                        <span class="text-sm text-gray-700">Notify on late submissions</span>
+                                    </label>
+                                </div>
+                                
+                                <div id="reminderSettings" class="border border-gray-200 rounded-lg p-4">
+                                    <h4 class="font-medium text-gray-800 mb-3">Reminder Schedule</h4>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" checked class="rounded mr-2">
+                                            <span class="text-sm text-gray-700">3 days before due date</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" checked class="rounded mr-2">
+                                            <span class="text-sm text-gray-700">1 day before due date</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded mr-2">
+                                            <span class="text-sm text-gray-700">2 hours before due date</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-6">
+                        <!-- Assignment Summary -->
+                        <div class="preview-card text-white rounded-xl p-6">
+                            <h4 class="font-semibold mb-4">Assignment Summary</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Title:</span>
+                                    <span id="summaryTitle">Not set</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Course:</span>
+                                    <span id="summaryCourse">Not selected</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Due Date:</span>
+                                    <span id="summaryDueDate">Not set</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Points:</span>
+                                    <span id="summaryPoints">100</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-indigo-100">Students:</span>
+                                    <span id="summaryStudents">All enrolled</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Publish Options -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h4 class="font-semibold text-gray-800 mb-4">Publish Options</h4>
+                            <div class="space-y-3">
+                                <button type="button" onclick="publishNow()" class="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+                                    <i class="fas fa-rocket mr-2"></i>Publish Now
+                                </button>
+                                <button type="button" onclick="schedulePublish()" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                    <i class="fas fa-clock mr-2"></i>Schedule for Later
+                                </button>
+                                <button type="button" onclick="saveDraft()" class="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                    <i class="fas fa-save mr-2"></i>Save as Draft
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Pre-publish Checklist -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h4 class="font-semibold text-gray-800 mb-4">Pre-publish Checklist</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="text-gray-700">Title and description added</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="text-gray-700">Course selected</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="text-gray-700">Due date set</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                    <span class="text-gray-700">Instructions added</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                    <span class="text-gray-700">Grading rubric configured</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center pt-8 border-t border-gray-200">
+                <button type="button" id="prevBtn" onclick="previousStep()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium hidden">
+                    <i class="fas fa-arrow-left mr-2"></i>Previous
+                </button>
+                <div class="flex space-x-4">
+                    <button type="button" onclick="saveDraft()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                        <i class="fas fa-save mr-2"></i>Save Draft
+                    </button>
+                    <button type="button" id="nextBtn" onclick="nextStep()" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium">
+                        Next Step<i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg hidden notification">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="notificationMessage">Assignment saved successfully!</span>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        // Initialize form
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default dates
+            const now = new Date();
+            const assignDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Tomorrow
+            const dueDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // Next week
+            
+            document.getElementById('assignDate').value = assignDate.toISOString().slice(0, 16);
+            document.getElementById('dueDate').value = dueDate.toISOString().slice(0, 16);
+
+            // Add event listeners
+            setupEventListeners();
+            updateSummary();
+        });
+
+        function setupEventListeners() {
+            // Form field listeners
+            document.getElementById('assignmentTitle').addEventListener('input', updateSummary);
+            document.getElementById('courseSelect').addEventListener('change', updateSummary);
+            document.getElementById('dueDate').addEventListener('change', updateSummary);
+            document.getElementById('totalPoints').addEventListener('input', updateSummary);
+            document.getElementById('assignmentType').addEventListener('change', updateSummary);
+            
+            // Late submission toggle
+            document.getElementById('allowLateSubmission').addEventListener('change', function() {
+                const latePenaltySection = document.getElementById('latePenaltySection');
+                if (this.checked) {
+                    latePenaltySection.classList.remove('hidden');
+                } else {
+                    latePenaltySection.classList.add('hidden');
+                }
+            });
+
+            // Password requirement toggle
+            document.getElementById('requirePassword').addEventListener('change', function() {
+                const passwordField = document.getElementById('accessPassword');
+                if (this.checked) {
+                    passwordField.classList.remove('hidden');
+                } else {
+                    passwordField.classList.add('hidden');
+                }
+            });
+
+            // Attempt limit toggle
+            document.getElementById('limitAttempts').addEventListener('change', function() {
+                const attemptsField = document.getElementById('maxAttempts');
+                if (this.checked) {
+                    attemptsField.classList.remove('hidden');
+                } else {
+                    attemptsField.classList.add('hidden');
+                }
+            });
+
+            // File upload
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+
+            // Instructions word count
+            document.getElementById('assignmentInstructions').addEventListener('input', function() {
+                const wordCount = this.value.trim().split(/\s+/).length;
+                document.getElementById('instructionLength').textContent = wordCount + ' words';
+            });
+        }
+
+        function updateSummary() {
+            const title = document.getElementById('assignmentTitle').value || 'Not set';
+            const course = document.getElementById('courseSelect').selectedOptions[0]?.text || 'Not selected';
+            const dueDate = document.getElementById('dueDate').value;
+            const points = document.getElementById('totalPoints').value || '100';
+            const type = document.getElementById('assignmentType').value || 'homework';
+
+            document.getElementById('summaryTitle').textContent = title;
+            document.getElementById('summaryCourse').textContent = course;
+            document.getElementById('summaryPoints').textContent = points;
+            
+            if (dueDate) {
+                const date = new Date(dueDate);
+                document.getElementById('summaryDueDate').textContent = date.toLocaleDateString();
+            }
+
+            // Update sidebar stats
+            document.getElementById('selectedCourse').textContent = course;
+            document.getElementById('selectedType').textContent = type.charAt(0).toUpperCase() + type.slice(1);
+            document.getElementById('selectedPoints').textContent = points;
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                if (validateCurrentStep()) {
+                    hideCurrentStep();
+                    currentStep++;
+                    showCurrentStep();
+                    updateStepIndicators();
+                    updateNavigationButtons();
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                hideCurrentStep();
+                currentStep--;
+                showCurrentStep();
+                updateStepIndicators();
+                updateNavigationButtons();
+            }
+        }
+
+        function showCurrentStep() {
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            document.getElementById(`step${currentStep}`).classList.add('fade-in');
+        }
+
+        function hideCurrentStep() {
+            const currentStepElement = document.getElementById(`step${currentStep}`);
+            currentStepElement.classList.add('hidden');
+            currentStepElement.classList.remove('fade-in');
+        }
+
+        function updateStepIndicators() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const indicator = document.querySelectorAll('.step-indicator')[i - 1];
+                indicator.classList.remove('active', 'completed');
+                
+                if (i < currentStep) {
+                    indicator.classList.add('completed');
+                } else if (i === currentStep) {
+                    indicator.classList.add('active');
+                }
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (currentStep === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            if (currentStep === totalSteps) {
+                nextBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Review & Publish';
+            } else {
+                nextBtn.innerHTML = 'Next Step<i class="fas fa-arrow-right ml-2"></i>';
+            }
+        }
+
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                const title = document.getElementById('assignmentTitle').value;
+                const course = document.getElementById('courseSelect').value;
+                const assignDate = document.getElementById('assignDate').value;
+                const dueDate = document.getElementById('dueDate').value;
+                
+                if (!title || !course || !assignDate || !dueDate) {
+                    alert('Please fill in all required fields in Step 1.');
+                    return false;
+                }
+                
+                if (new Date(dueDate) <= new Date(assignDate)) {
+                    alert('Due date must be after assign date.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // File handling
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            const uploadedFilesContainer = document.getElementById('uploadedFiles');
+            
+            for (let file of files) {
+                const fileElement = createFileElement(file);
+                uploadedFilesContainer.appendChild(fileElement);
+            }
+            
+            updateAttachmentCount();
+        }
+
+        function createFileElement(file) {
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+            
+            fileDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-file text-gray-500 mr-3"></i>
+                    <div>
+                        <div class="font-medium text-sm text-gray-800">${file.name}</div>
+                        <div class="text-xs text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</div>
+                    </div>
+                </div>
+                <button type="button" onclick="removeFile(this)" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            return fileDiv;
+        }
+
+        function removeFile(button) {
+            button.closest('.flex').remove();
+            updateAttachmentCount();
+        }
+
+        function updateAttachmentCount() {
+            const count = document.getElementById('uploadedFiles').children.length;
+            document.getElementById('attachmentCount').textContent = count + ' files';
+        }
+
+        // External links
+        function addExternalLink() {
+            const linksContainer = document.getElementById('externalLinks');
+            const linkInputs = linksContainer.querySelector('.flex');
+            const url = linkInputs.children[0].value;
+            const title = linkInputs.children[1].value;
+            
+            if (url && title) {
+                const linkElement = document.createElement('div');
+                linkElement.className = 'flex items-center justify-between p-2 bg-gray-50 rounded-lg';
+                linkElement.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas fa-link text-gray-500 mr-2"></i>
+                        <a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">${title}</a>
+                    </div>
+                    <button type="button" onclick="removeLink(this)" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                linksContainer.appendChild(linkElement);
+                
+                // Clear inputs
+                linkInputs.children[0].value = '';
+                linkInputs.children[1].value = '';
+                
+                updateLinkCount();
+            }
+        }
+
+        function removeLink(button) {
+            button.closest('.flex').remove();
+            updateLinkCount();
+        }
+
+        function updateLinkCount() {
+            const count = document.getElementById('externalLinks').children.length - 1; // Subtract input row
+            document.getElementById('linkCount').textContent = count + ' links';
+        }
+
+        // Rubric management
+        function addRubricCriteria() {
+            const criteriaContainer = document.getElementById('rubricCriteria');
+            const newCriteria = document.createElement('div');
+            newCriteria.className = 'rubric-row grid grid-cols-1 md:grid-cols-4 gap-3 p-3 border border-gray-200 rounded-lg';
+            newCriteria.innerHTML = `
+                <input type="text" placeholder="Criteria name" class="px-3 py-2 border border-gray-300 rounded-lg">
+                <input type="number" placeholder="Points" min="1" class="px-3 py-2 border border-gray-300 rounded-lg">
+                <select class="px-3 py-2 border border-gray-300 rounded-lg">
+                    <option>Excellent</option>
+                    <option>Good</option>
+                    <option>Fair</option>
+                    <option>Poor</option>
+                </select>
+                <button type="button" onclick="removeRubricCriteria(this)" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            criteriaContainer.appendChild(newCriteria);
+        }
+
+        function removeRubricCriteria(button) {
+            button.closest('.rubric-row').remove();
+        }
+
+        // Template functions
+        function useTemplate() {
+            alert('Template selection dialog would open here');
+        }
+
+        function importFromFile() {
+            alert('File import dialog would open here');
+        }
+
+        function duplicateAssignment() {
+            alert('Assignment duplication dialog would open here');
+        }
+
+        function loadTemplate(type) {
+            const templates = {
+                'project': {
+                    title: 'Programming Project Template',
+                    instructions: `Project Requirements:
+1. Implement the required functionality using Python
+2. Follow proper coding standards and documentation
+3. Include comprehensive test cases
+4. Submit source code and documentation
+
+Deliverables:
+- Source code files (.py)
+- Documentation (README.md)
+- Test cases and results
+- Project report (PDF)`
+                },
+                'quiz': {
+                    title: 'Weekly Quiz Template',
+                    instructions: `Quiz Instructions:
+1. This quiz covers material from Week X
+2. You have 30 minutes to complete
+3. Multiple choice and short answer questions
+4. No external resources allowed
+
+Format:
+- 10 multiple choice questions (2 points each)
+- 5 short answer questions (4 points each)
+- Total: 40 points`
+                },
+                'lab': {
+                    title: 'Lab Assignment Template',
+                    instructions: `Lab Exercise Instructions:
+1. Complete the hands-on exercises
+2. Document your process and results
+3. Answer the analysis questions
+4. Submit lab report
+
+Requirements:
+- Follow lab safety procedures
+- Record all observations
+- Include screenshots/photos where applicable
+- Submit within 24 hours of lab session`
+                }
+            };
+            
+            const template = templates[type];
+            if (template) {
+                document.getElementById('assignmentTitle').value = template.title;
+                document.getElementById('assignmentInstructions').value = template.instructions;
+                updateSummary();
+                showNotification('Template loaded successfully!');
+            }
+        }
+
+        function insertTemplate(type) {
+            loadTemplate(type);
+        }
+
+        // Text formatting
+        function formatText(command) {
+            const textarea = document.getElementById('assignmentInstructions');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            
+            let formattedText = selectedText;
+            
+            switch(command) {
+                case 'bold':
+                    formattedText = `**${selectedText}**`;
+                    break;
+                case 'italic':
+                    formattedText = `*${selectedText}*`;
+                    break;
+                case 'underline':
+                    formattedText = `__${selectedText}__`;
+                    break;
+                case 'list':
+                    formattedText = selectedText.split('\n').map(line => `- ${line}`).join('\n');
+                    break;
+                case 'link':
+                    const url = prompt('Enter URL:');
+                    if (url) {
+                        formattedText = `[${selectedText || 'Link text'}](${url})`;
+                    }
+                    break;
+            }
+            
+            textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+            textarea.focus();
+        }
+
+        // Action functions
+        function saveDraft() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                showNotification('Draft saved successfully!');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, 1500);
+        }
+
+        function previewAssignment() {
+            alert('Assignment preview would open in a new window');
+        }
+
+        function publishNow() {
+            if (validateForm()) {
+                const button = event.target;
+                const originalText = button.innerHTML;
+                
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Publishing...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    showNotification('Assignment published successfully!');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    
+                    // Redirect to assignments list
+                    setTimeout(() => {
+                        alert('Redirecting to assignments list...');
+                    }, 2000);
+                }, 2000);
+            }
+        }
+
+        function schedulePublish() {
+            const publishDate = prompt('Enter publish date and time (YYYY-MM-DD HH:MM):');
+            if (publishDate) {
+                showNotification(`Assignment scheduled for ${publishDate}`);
+            }
+        }
+
+        function validateForm() {
+            const title = document.getElementById('assignmentTitle').value;
+            const course = document.getElementById('courseSelect').value;
+            const instructions = document.getElementById('assignmentInstructions').value;
+            
+            if (!title || !course) {
+                alert('Please fill in all required fields.');
+                return false;
+            }
+            
+            if (!instructions.trim()) {
+                alert('Please add assignment instructions.');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function goBack() {
+            if (confirm('Are you sure you want to leave? Unsaved changes will be lost.')) {
+                alert('Returning to assignments list...');
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('successNotification');
+            document.getElementById('notificationMessage').textContent = message;
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Drag and drop for file upload
+        const dropZone = document.querySelector('.file-drop-zone');
+        
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+        
+        dropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+        
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            const uploadedFilesContainer = document.getElementById('uploadedFiles');
+            
+            for (let file of files) {
+                const fileElement = createFileElement(file);
+                uploadedFilesContainer.appendChild(fileElement);
+            }
+            
+            updateAttachmentCount();
+        });
+    </script>
+</body>
+</html>
