@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Development - Course Details | EduManage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            transition: width 0.8s ease;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-lg border-b border-gray-200 fixed w-full top-0 z-40">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Back Button & Course Title -->
+                <div class="flex items-center">
+                    <button onclick="goBack()"
+                        class="p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 mr-3">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <i class="fas fa-graduation-cap text-2xl text-indigo-600 mr-3"></i>
+                        <div>
+                            <h1 class="text-lg font-bold text-gray-800">Web Development</h1>
+                            <p class="text-xs text-gray-500">CSE 4101 • Fall 2024</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <!-- Course Actions -->
+                    <button class="p-2 text-gray-600 hover:text-indigo-600" title="Bookmark Course">
+                        <i class="fas fa-bookmark text-xl"></i>
+                    </button>
+
+                    <button class="p-2 text-gray-600 hover:text-indigo-600" title="Course Settings">
+                        <i class="fas fa-cog text-xl"></i>
+                    </button>
+
+                    <!-- Profile -->
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">JS</span>
+                        </div>
+                        <span class="text-sm font-medium text-gray-700 hidden sm:block">Amir Hamja</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-16 min-h-screen">
+        <!-- Course Header -->
+        <div class="gradient-bg text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Course Info -->
+                    <div class="lg:col-span-2">
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fas fa-code text-3xl text-white"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold mb-2">Web Development</h1>
+                                <p class="text-white/90">Learn modern web development with React, Node.js, and MongoDB
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Course Stats -->
+                        <div class="grid grid-cols-3 gap-4 mt-6">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold">75%</p>
+                                <p class="text-white/80 text-sm">Progress</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold">8/12</p>
+                                <p class="text-white/80 text-sm">Assignments</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-2xl font-bold">92%</p>
+                                <p class="text-white/80 text-sm">Average Grade</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instructor Info -->
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                        <h3 class="text-lg font-semibold mb-4">Instructor</h3>
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                                <span class="text-white font-medium">PJ</span>
+                            </div>
+                            <div>
+                                <p class="font-medium">Prof. Amir Hamja</p>
+                                <p class="text-white/80 text-sm">Computer Science Dept.</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <p><i class="fas fa-envelope mr-2"></i>hamja@diu.edu.edu</p>
+                            <p><i class="fas fa-clock mr-2"></i>Office Hours: Mon-Wed 2-4 PM</p>
+                            <p><i class="fas fa-map-marker-alt mr-2"></i>Room 301, CS Building</p>
+                        </div>
+                        <button
+                            class="w-full mt-4 bg-white text-indigo-600 py-2 rounded-lg hover:bg-gray-100 font-medium">
+                            Contact Instructor
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-8">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-white/90 text-sm">Course Progress</span>
+                        <span class="text-white font-medium">75%</span>
+                    </div>
+                    <div class="w-full bg-white/20 rounded-full h-3">
+                        <div class="bg-white h-3 rounded-full progress-bar" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Navigation Tabs -->
+            <div class="border-b border-gray-200 mb-8">
+                <nav class="flex space-x-8">
+                    <button class="tab-btn tab-active py-4 px-1 border-b-2 font-medium text-sm" data-tab="materials">
+                        <i class="fas fa-book mr-2"></i>Materials
+                    </button>
+                    <button
+                        class="tab-btn py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm"
+                        data-tab="assignments">
+                        <i class="fas fa-tasks mr-2"></i>Assignments
+                    </button>
+                    <button
+                        class="tab-btn py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm"
+                        data-tab="discussions">
+                        <i class="fas fa-comments mr-2"></i>Discussions
+                    </button>
+                    <button
+                        class="tab-btn py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm"
+                        data-tab="grades">
+                        <i class="fas fa-chart-bar mr-2"></i>Grades
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Materials Tab -->
+                <div id="materials" class="tab-pane active">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Main Content -->
+                        <div class="lg:col-span-2">
+                            <!-- Week 1 -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
+                                <div class="p-6 border-b border-gray-200">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-semibold text-gray-800">Week 1: Introduction to Web
+                                            Development</h3>
+                                        <span
+                                            class="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">Completed</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <!-- Video Lecture -->
+                                    <div class="mb-6">
+                                        <h4 class="font-medium text-gray-800 mb-3">📹 Video Lecture</h4>
+                                        <div class="bg-gray-100 rounded-lg p-4">
+                                            <div class="video-container bg-black rounded-lg">
+                                                <div class="absolute inset-0 flex items-center justify-center">
+                                                    <button
+                                                        class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                                                        <i class="fas fa-play text-white text-xl ml-1"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 flex items-center justify-between">
+                                                <p class="text-sm font-medium text-gray-800">HTML & CSS Fundamentals</p>
+                                                <span class="text-xs text-gray-500">45:30</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Reading Materials -->
+                                    <div class="mb-6">
+                                        <h4 class="font-medium text-gray-800 mb-3">📚 Reading Materials</h4>
+                                        <div class="space-y-3">
+                                            <div
+                                                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-file-pdf text-red-500 mr-3"></i>
+                                                    <div>
+                                                        <p class="text-sm font-medium text-gray-800">HTML5 Reference
+                                                            Guide</p>
+                                                        <p class="text-xs text-gray-500">PDF • 2.5 MB</p>
+                                                    </div>
+                                                </div>
+                                                <button class="text-indigo-600 hover:text-indigo-700">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+
+                                            <div
+                                                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-link text-blue-500 mr-3"></i>
+                                                    <div>
+                                                        <p class="text-sm font-medium text-gray-800">MDN Web Docs - HTML
+                                                        </p>
+                                                        <p class="text-xs text-gray-500">External Link</p>
+                                                    </div>
+                                                </div>
+                                                <button class="text-indigo-600 hover:text-indigo-700">
+                                                    <i class="fas fa-external-link-alt"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Code Examples -->
+                                    <div>
+                                        <h4 class="font-medium text-gray-800 mb-3">💻 Code Examples</h4>
+                                        <div class="bg-gray-900 rounded-lg p-4 text-green-400 text-sm font-mono">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="text-gray-400">basic-html-structure.html</span>
+                                                <button class="text-gray-400 hover:text-white">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                            <pre class="text-xs overflow-x-auto">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;My First Web Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello World!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Week 2 -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
+                                <div class="p-6 border-b border-gray-200">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-semibold text-gray-800">Week 2: JavaScript Fundamentals
+                                        </h3>
+                                        <span class="text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-full">In
+                                            Progress</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-play-circle text-blue-500 mr-3"></i>
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-800">JavaScript Variables &
+                                                        Functions</p>
+                                                    <p class="text-xs text-gray-500">Video • 38:45</p>
+                                                </div>
+                                            </div>
+                                            <button
+                                                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+                                                Watch Now
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-file-alt text-gray-400 mr-3"></i>
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-800">JavaScript Exercises
+                                                    </p>
+                                                    <p class="text-xs text-gray-500">PDF • 1.8 MB</p>
+                                                </div>
+                                            </div>
+                                            <button class="text-gray-400">
+                                                <i class="fas fa-lock"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="space-y-6">
+                            <!-- Course Outline -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Course Outline</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center text-sm">
+                                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                            <span class="text-gray-800">Week 1: HTML & CSS</span>
+                                        </div>
+                                        <div class="flex items-center text-sm">
+                                            <i class="fas fa-circle text-blue-500 mr-3"></i>
+                                            <span class="text-gray-800">Week 2: JavaScript Basics</span>
+                                        </div>
+                                        <div class="flex items-center text-sm">
+                                            <i class="fas fa-circle text-gray-300 mr-3"></i>
+                                            <span class="text-gray-500">Week 3: DOM Manipulation</span>
+                                        </div>
+                                        <div class="flex items-center text-sm">
+                                            <i class="fas fa-circle text-gray-300 mr-3"></i>
+                                            <span class="text-gray-500">Week 4: React Introduction</span>
+                                        </div>
+                                        <div class="flex items-center text-sm">
+                                            <i class="fas fa-circle text-gray-300 mr-3"></i>
+                                            <span class="text-gray-500">Week 5: React Components</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upcoming Deadlines -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Upcoming Deadlines</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-800">React Project</p>
+                                                <p class="text-xs text-red-600">Due in 2 days</p>
+                                            </div>
+                                            <i class="fas fa-exclamation-triangle text-red-500"></i>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-800">JS Quiz</p>
+                                                <p class="text-xs text-orange-600">Due in 5 days</p>
+                                            </div>
+                                            <i class="fas fa-clock text-orange-500"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assignments Tab -->
+                <div id="assignments" class="tab-pane hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6">
+                            <!-- Upcoming Assignments -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Upcoming Assignments</h3>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="border border-red-200 bg-red-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h4 class="font-medium text-gray-800">React Project Submission</h4>
+                                            <span class="text-xs bg-red-600 text-white px-2 py-1 rounded-full">Due in 2
+                                                days</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Create a complete React application with
+                                            components, state management, and API integration.</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-500">Max Score: 100 points</span>
+                                            <button
+                                                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm">
+                                                Submit Assignment
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="border border-orange-200 bg-orange-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h4 class="font-medium text-gray-800">JavaScript Quiz</h4>
+                                            <span class="text-xs bg-orange-600 text-white px-2 py-1 rounded-full">Due in
+                                                5 days</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Online quiz covering JavaScript
+                                            fundamentals, functions, and DOM manipulation.</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-500">Max Score: 50 points • 30 minutes</span>
+                                            <button
+                                                class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 text-sm">
+                                                Start Quiz
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Completed Assignments -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Completed Assignments</h3>
+                                </div>
+                                <div class="p-6 space-y-4">
+                                    <div class="border border-green-200 bg-green-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h4 class="font-medium text-gray-800">HTML/CSS Portfolio</h4>
+                                            <span class="text-lg font-bold text-green-600">92/100</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Personal portfolio website using HTML5 and
+                                            CSS3.</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-500">Submitted: Oct 15, 2024</span>
+                                            <button class="text-green-600 hover:text-green-700 text-sm font-medium">
+                                                View Feedback
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="border border-blue-200 bg-blue-50 rounded-lg p-4">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h4 class="font-medium text-gray-800">CSS Flexbox Exercise</h4>
+                                            <span class="text-lg font-bold text-blue-600">88/100</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mb-3">Layout exercises using CSS Flexbox
+                                            properties.</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-500">Submitted: Oct 8, 2024</span>
+                                            <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                                View Feedback
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assignment Stats -->
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Assignment Stats</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-4">
+                                        <div class="text-center">
+                                            <p class="text-3xl font-bold text-gray-800">8/12</p>
+                                            <p class="text-sm text-gray-600">Completed</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-3xl font-bold text-green-600">90%</p>
+                                            <p class="text-sm text-gray-600">Average Score</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-3xl font-bold text-orange-600">2</p>
+                                            <p class="text-sm text-gray-600">Pending</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Discussions Tab -->
+                <div id="discussions" class="tab-pane hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6">
+                            <!-- New Discussion -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Start New Discussion</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-4">
+                                        <input type="text" placeholder="Discussion title..."
+                                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <textarea placeholder="What would you like to discuss?" rows="4"
+                                            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                                        <button
+                                            class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700">
+                                            Post Discussion
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Discussion Posts -->
+                            <div class="space-y-4">
+                                <!-- Discussion 1 -->
+                                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                    <div class="p-6">
+                                        <div class="flex items-start space-x-4">
+                                            <div
+                                                class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                                                <span class="text-white text-sm font-medium">SM</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex items-center space-x-2 mb-2">
+                                                    <h4 class="font-medium text-gray-800">Sarah Miller</h4>
+                                                    <span class="text-xs text-gray-500">2 hours ago</span>
+                                                </div>
+                                                <h3 class="font-semibold text-gray-800 mb-2">Question about React Hooks
+                                                </h3>
+                                                <p class="text-gray-600 text-sm mb-4">Can someone explain the difference
+                                                    between useState and useEffect hooks? I'm having trouble
+                                                    understanding when to use each one.</p>
+                                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                                    <button class="hover:text-indigo-600">
+                                                        <i class="fas fa-thumbs-up mr-1"></i>5 Likes
+                                                    </button>
+                                                    <button class="hover:text-indigo-600">
+                                                        <i class="fas fa-reply mr-1"></i>3 Replies
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Discussion 2 -->
+                                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                    <div class="p-6">
+                                        <div class="flex items-start space-x-4">
+                                            <div
+                                                class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                                                <span class="text-white text-sm font-medium">MJ</span>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="flex items-center space-x-2 mb-2">
+                                                    <h4 class="font-medium text-gray-800">Mike Johnson</h4>
+                                                    <span class="text-xs text-gray-500">1 day ago</span>
+                                                </div>
+                                                <h3 class="font-semibold text-gray-800 mb-2">Sharing useful CSS
+                                                    resources</h3>
+                                                <p class="text-gray-600 text-sm mb-4">Found some great CSS Grid
+                                                    tutorials that helped me with the layout assignment. Thought I'd
+                                                    share them with everyone!</p>
+                                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                                    <button class="hover:text-indigo-600">
+                                                        <i class="fas fa-thumbs-up mr-1"></i>12 Likes
+                                                    </button>
+                                                    <button class="hover:text-indigo-600">
+                                                        <i class="fas fa-reply mr-1"></i>7 Replies
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Discussion Stats -->
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Discussion Stats</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-600">Total Posts</span>
+                                            <span class="font-semibold">24</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-600">Your Posts</span>
+                                            <span class="font-semibold">3</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-600">Replies</span>
+                                            <span class="font-semibold">8</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Active Discussions -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Most Active</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-3">
+                                        <div class="text-sm">
+                                            <p class="font-medium text-gray-800">React Best Practices</p>
+                                            <p class="text-gray-500">15 replies</p>
+                                        </div>
+                                        <div class="text-sm">
+                                            <p class="font-medium text-gray-800">CSS Grid vs Flexbox</p>
+                                            <p class="text-gray-500">12 replies</p>
+                                        </div>
+                                        <div class="text-sm">
+                                            <p class="font-medium text-gray-800">JavaScript ES6 Features</p>
+                                            <p class="text-gray-500">9 replies</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grades Tab -->
+                <div id="grades" class="tab-pane hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-6">
+                            <!-- Grade Summary -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Grade Summary</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                                            <p class="text-3xl font-bold text-green-600">92%</p>
+                                            <p class="text-sm text-gray-600">Current Average</p>
+                                        </div>
+                                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                                            <p class="text-3xl font-bold text-blue-600">A-</p>
+                                            <p class="text-sm text-gray-600">Current Grade</p>
+                                        </div>
+                                        <div class="text-center p-4 bg-purple-50 rounded-lg">
+                                            <p class="text-3xl font-bold text-purple-600">8/12</p>
+                                            <p class="text-sm text-gray-600">Completed</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Individual Grades -->
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">HTML/CSS Portfolio</h4>
+                                                <p class="text-sm text-gray-600">Assignment • Oct 15, 2024</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-lg font-bold text-green-600">92/100</span>
+                                                <p class="text-xs text-gray-500">A-</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">CSS Flexbox Exercise</h4>
+                                                <p class="text-sm text-gray-600">Assignment • Oct 8, 2024</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-lg font-bold text-blue-600">88/100</span>
+                                                <p class="text-xs text-gray-500">B+</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">JavaScript Basics Quiz</h4>
+                                                <p class="text-sm text-gray-600">Quiz • Oct 1, 2024</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-lg font-bold text-purple-600">95/100</span>
+                                                <p class="text-xs text-gray-500">A</p>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="flex items-center justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">React Project</h4>
+                                                <p class="text-sm text-gray-600">Assignment • Pending</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-sm text-orange-600 font-medium">Not Submitted</span>
+                                                <p class="text-xs text-gray-500">Due in 2 days</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grade Breakdown -->
+                        <div class="space-y-6">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Grade Breakdown</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-600">Assignments (60%)</span>
+                                                <span class="font-semibold">90%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-green-600 h-2 rounded-full" style="width: 90%"></div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-600">Quizzes (25%)</span>
+                                                <span class="font-semibold">95%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div class="flex justify-between items-center mb-2">
+                                                <span class="text-sm text-gray-600">Participation (15%)</span>
+                                                <span class="font-semibold">88%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-purple-600 h-2 rounded-full" style="width: 88%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Grade History -->
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                                <div class="p-6 border-b border-gray-200">
+                                    <h3 class="text-lg font-semibold text-gray-800">Recent Grades</h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-600">Oct 15</span>
+                                            <span class="font-semibold text-green-600">92%</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-600">Oct 8</span>
+                                            <span class="font-semibold text-blue-600">88%</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm text-gray-600">Oct 1</span>
+                                            <span class="font-semibold text-purple-600">95%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetTab = this.getAttribute('data-tab');
+
+                // Remove active classes
+                tabBtns.forEach(b => {
+                    b.classList.remove('tab-active', 'text-indigo-600');
+                    b.classList.add('text-gray-500');
+                });
+
+                tabPanes.forEach(pane => {
+                    pane.classList.add('hidden');
+                    pane.classList.remove('active');
+                });
+
+                // Add active classes
+                this.classList.add('tab-active', 'text-indigo-600');
+                this.classList.remove('text-gray-500');
+
+                const targetPane = document.getElementById(targetTab);
+                targetPane.classList.remove('hidden');
+                targetPane.classList.add('active');
+            });
+        });
+
+        // Back button functionality
+        function goBack() {
+            // In a real app, this would navigate back to dashboard
+            alert('Navigating back to dashboard...');
+        }
+
+        // Video play functionality
+        document.querySelectorAll('.video-container button').forEach(btn => {
+            btn.addEventListener('click', function () {
+                alert('Video player would open here in a real application');
+            });
+        });
+
+        // Download functionality
+        document.querySelectorAll('.fa-download').forEach(btn => {
+            btn.addEventListener('click', function () {
+                alert('File download would start here');
+            });
+        });
+
+        // Assignment submission
+        document.querySelectorAll('button:contains("Submit Assignment")').forEach(btn => {
+            if (btn.textContent.includes('Submit Assignment')) {
+                btn.addEventListener('click', function () {
+                    alert('Assignment submission page would open here');
+                });
+            }
+        });
+
+        // Quiz functionality
+        document.querySelectorAll('button:contains("Start Quiz")').forEach(btn => {
+            if (btn.textContent.includes('Start Quiz')) {
+                btn.addEventListener('click', function () {
+                    alert('Quiz interface would open here');
+                });
+            }
+        });
+
+        // Discussion post functionality
+        document.querySelector('button:contains("Post Discussion")').addEventListener('click', function () {
+            const title = document.querySelector('input[placeholder="Discussion title..."]').value;
+            const content = document.querySelector('textarea[placeholder="What would you like to discuss?"]').value;
+
+            if (title && content) {
+                alert('Discussion posted successfully!');
+                // Clear form
+                document.querySelector('input[placeholder="Discussion title..."]').value = '';
+                document.querySelector('textarea[placeholder="What would you like to discuss?"]').value = '';
+            } else {
+                alert('Please fill in both title and content');
+            }
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.fa-copy').forEach(btn => {
+            btn.addEventListener('click', function () {
+                alert('Code copied to clipboard!');
+            });
+        });
+
+        // Progress bar animation
+        window.addEventListener('load', function () {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'95ae84ae05823366',t:'MTc1MTc5ODc4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

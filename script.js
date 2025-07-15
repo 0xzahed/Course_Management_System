@@ -115,12 +115,20 @@ loginForm.addEventListener('submit', function (e) {
         //     loginBtn.disabled = false;
         // });
 
-        // For now, just reset the form (remove this in production)
+        // Simulate login success and redirect to student dashboard
         setTimeout(() => {
-            loginText.textContent = 'Sign In';
-            loginLoader.classList.add('hidden');
-            loginBtn.disabled = false;
-            alert('Please implement backend API call for actual login functionality.');
+            successMessage.classList.remove('hidden');
+            
+            // Redirect to student dashboard after showing success message
+            setTimeout(() => {
+                if (selectedRole === 'student') {
+                    window.location.href = 'student-dashboard.html';
+                } else if (selectedRole === 'instructor') {
+                    window.location.href = 'instructor-dashboard.html';
+                } else if (selectedRole === 'admin') {
+                    window.location.href = 'student-dashboard.html';
+                }
+            }, 1000);
         }, 1500);
     }
 });
