@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Fundamentals Quiz | EduManage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .timer-warning { animation: pulse 1s infinite; }
+        .timer-critical { animation: flash 0.5s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        @keyframes flash {
+            0%, 100% { background-color: #fee2e2; }
+            50% { background-color: #fecaca; }
+        }
+        .question-nav-item {
+            transition: all 0.2s ease;
+        }
+        .question-nav-item:hover {
+            transform: scale(1.05);
+        }
+        .fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: white;
+        }
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        .question-slide {
+            display: none;
+        }
+        .question-slide.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Exam Header -->
+    <div id="examContainer" class="min-h-screen">
+        <nav class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-40">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Exam Info -->
+                    <div class="flex items-center">
+                        <i class="fas fa-clipboard-check text-2xl text-indigo-600 mr-3"></i>
+                        <div>
+                            <h1 class="text-lg font-bold text-gray-800">JavaScript Fundamentals Quiz</h1>
+                            <p class="text-xs text-gray-500">Web Development • 20 Questions</p>
+                        </div>
+                    </div>
+
+                    <!-- Timer & Actions -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Timer -->
+                        <div id="timerContainer" class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-clock text-blue-600 mr-2"></i>
+                                <div class="text-center">
+                                    <div id="timer" class="text-lg font-bold text-blue-600">29:45</div>
+                                    <div class="text-xs text-blue-500">Time Left</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fullscreen Toggle -->
+                        <button id="fullscreenBtn" class="p-2 text-gray-600 hover:text-indigo-600 hover:bg-gray-100 rounded-lg" title="Toggle Fullscreen">
+                            <i class="fas fa-expand text-xl"></i>
+                        </button>
+
+                        <!-- Submit Button -->
+                        <button id="submitExamBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium">
+                            <i class="fas fa-paper-plane mr-2"></i>Submit Quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Question Navigation Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 sticky top-24">
+                        <!-- Progress Overview -->
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Progress</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Answered</span>
+                                    <span id="answeredCount" class="font-medium">0/20</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div id="progressBar" class="bg-indigo-600 h-2 rounded-full progress-bar" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-500">
+                                    <span>0%</span>
+                                    <span id="progressPercent">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question Navigation -->
+                        <div class="p-6">
+                            <h4 class="font-medium text-gray-800 mb-3">Questions</h4>
+                            <div class="grid grid-cols-5 gap-2" id="questionNav">
+                                <!-- Question navigation buttons will be generated here -->
+                            </div>
+                            
+                            <!-- Legend -->
+                            <div class="mt-4 space-y-2 text-xs">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-gray-200 rounded mr-2"></div>
+                                    <span class="text-gray-600">Not Answered</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded mr-2"></div>
+                                    <span class="text-gray-600">Answered</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-indigo-600 rounded mr-2"></div>
+                                    <span class="text-gray-600">Current</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Content -->
+                <div class="lg:col-span-3">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <!-- Question Header -->
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h2 class="text-xl font-semibold text-gray-800">
+                                        Question <span id="currentQuestionNum">1</span> of 20
+                                    </h2>
+                                    <p class="text-sm text-gray-600 mt-1">Choose the best answer</p>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    <i class="fas fa-save mr-1"></i>
+                                    <span id="saveStatus">Auto-saved</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question Content Area -->
+                        <div class="p-6" id="questionContent">
+                            <!-- Questions will be dynamically loaded here -->
+                        </div>
+
+                        <!-- Navigation Controls -->
+                        <div class="p-6 border-t border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <button id="prevBtn" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-chevron-left mr-2"></i>Previous
+                                </button>
+                                
+                                <div class="flex items-center space-x-3">
+                                    <button id="flagBtn" class="px-4 py-2 border border-yellow-300 text-yellow-700 bg-yellow-50 rounded-lg hover:bg-yellow-100">
+                                        <i class="fas fa-flag mr-2"></i>Flag for Review
+                                    </button>
+                                    <button id="clearBtn" class="px-4 py-2 border border-red-300 text-red-700 bg-red-50 rounded-lg hover:bg-red-100">
+                                        <i class="fas fa-eraser mr-2"></i>Clear Answer
+                                    </button>
+                                </div>
+
+                                <button id="nextBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                    Next<i class="fas fa-chevron-right ml-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div id="submitModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-exclamation-triangle text-yellow-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Submit Quiz?</h3>
+                <div id="submitSummary" class="text-gray-600 mb-6">
+                    <!-- Summary will be populated here -->
+                </div>
+                <div class="flex space-x-3">
+                    <button id="cancelSubmit" class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        Continue Quiz
+                    </button>
+                    <button id="confirmSubmit" class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Submit Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Warning Modal -->
+    <div id="timeWarningModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl max-w-md w-full p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-clock text-red-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Time Warning!</h3>
+                <p class="text-gray-600 mb-6">You have less than 5 minutes remaining. Please review your answers and submit soon.</p>
+                <button id="closeTimeWarning" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    Continue Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                id: 1,
+                type: 'multiple-choice',
+                question: 'What is the correct way to declare a variable in JavaScript?',
+                options: [
+                    'var myVariable;',
+                    'variable myVariable;',
+                    'v myVariable;',
+                    'declare myVariable;'
+                ],
+                correct: 0
+            },
+            {
+                id: 2,
+                type: 'multiple-choice',
+                question: 'Which of the following is NOT a JavaScript data type?',
+                options: [
+                    'String',
+                    'Boolean',
+                    'Float',
+                    'Number'
+                ],
+                correct: 2
+            },
+            {
+                id: 3,
+                type: 'true-false',
+                question: 'JavaScript is case-sensitive.',
+                correct: true
+            },
+            {
+                id: 4,
+                type: 'multiple-choice',
+                question: 'What does DOM stand for?',
+                options: [
+                    'Document Object Model',
+                    'Data Object Management',
+                    'Dynamic Object Method',
+                    'Document Oriented Model'
+                ],
+                correct: 0
+            },
+            {
+                id: 5,
+                type: 'short-answer',
+                question: 'What method is used to add an element to the end of an array in JavaScript?'
+            },
+            {
+                id: 6,
+                type: 'multiple-choice',
+                question: 'Which operator is used for strict equality in JavaScript?',
+                options: [
+                    '==',
+                    '===',
+                    '=',
+                    '!='
+                ],
+                correct: 1
+            },
+            {
+                id: 7,
+                type: 'true-false',
+                question: 'The let keyword has block scope in JavaScript.',
+                correct: true
+            },
+            {
+                id: 8,
+                type: 'multiple-choice',
+                question: 'What is the result of typeof null in JavaScript?',
+                options: [
+                    'null',
+                    'undefined',
+                    'object',
+                    'string'
+                ],
+                correct: 2
+            },
+            {
+                id: 9,
+                type: 'short-answer',
+                question: 'Name the three ways to create a function in JavaScript (separate with commas).'
+            },
+            {
+                id: 10,
+                type: 'multiple-choice',
+                question: 'Which method is used to remove the last element from an array?',
+                options: [
+                    'pop()',
+                    'push()',
+                    'shift()',
+                    'unshift()'
+                ],
+                correct: 0
+            },
+            {
+                id: 11,
+                type: 'true-false',
+                question: 'JavaScript supports automatic type conversion.',
+                correct: true
+            },
+            {
+                id: 12,
+                type: 'multiple-choice',
+                question: 'What is the correct syntax for a for loop in JavaScript?',
+                options: [
+                    'for (i = 0; i <= 5)',
+                    'for (i = 0; i <= 5; i++)',
+                    'for i = 1 to 5',
+                    'for (i <= 5; i++)'
+                ],
+                correct: 1
+            },
+            {
+                id: 13,
+                type: 'short-answer',
+                question: 'What does JSON stand for?'
+            },
+            {
+                id: 14,
+                type: 'multiple-choice',
+                question: 'Which event occurs when the user clicks on an HTML element?',
+                options: [
+                    'onchange',
+                    'onclick',
+                    'onmouseclick',
+                    'onmouseover'
+                ],
+                correct: 1
+            },
+            {
+                id: 15,
+                type: 'true-false',
+                question: 'Arrays in JavaScript can hold different data types.',
+                correct: true
+            },
+            {
+                id: 16,
+                type: 'multiple-choice',
+                question: 'What is the correct way to write a JavaScript array?',
+                options: [
+                    'var colors = "red", "green", "blue"',
+                    'var colors = (1:"red", 2:"green", 3:"blue")',
+                    'var colors = ["red", "green", "blue"]',
+                    'var colors = 1 = ("red"), 2 = ("green"), 3 = ("blue")'
+                ],
+                correct: 2
+            },
+            {
+                id: 17,
+                type: 'short-answer',
+                question: 'What keyword is used to create a constant in JavaScript?'
+            },
+            {
+                id: 18,
+                type: 'multiple-choice',
+                question: 'How do you write "Hello World" in an alert box?',
+                options: [
+                    'alertBox("Hello World");',
+                    'msg("Hello World");',
+                    'alert("Hello World");',
+                    'msgBox("Hello World");'
+                ],
+                correct: 2
+            },
+            {
+                id: 19,
+                type: 'true-false',
+                question: 'JavaScript can be used for both client-side and server-side development.',
+                correct: true
+            },
+            {
+                id: 20,
+                type: 'multiple-choice',
+                question: 'Which company developed JavaScript?',
+                options: [
+                    'Microsoft',
+                    'Netscape',
+                    'Sun Microsystems',
+                    'IBM'
+                ],
+                correct: 1
+            }
+        ];
+
+        // Quiz state
+        let currentQuestion = 0;
+        let answers = {};
+        let timeLeft = 30 * 60; // 30 minutes in seconds
+        let timerInterval;
+        let isFullscreen = false;
+        let flaggedQuestions = new Set();
+
+        // Initialize quiz
+        function initializeQuiz() {
+            generateQuestionNavigation();
+            loadQuestion(0);
+            startTimer();
+            updateProgress();
+        }
+
+        // Generate question navigation
+        function generateQuestionNavigation() {
+            const nav = document.getElementById('questionNav');
+            nav.innerHTML = '';
+            
+            for (let i = 0; i < quizData.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'question-nav-item w-8 h-8 rounded text-sm font-medium border-2 border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200';
+                btn.textContent = i + 1;
+                btn.onclick = () => loadQuestion(i);
+                nav.appendChild(btn);
+            }
+        }
+
+        // Load question
+        function loadQuestion(index) {
+            currentQuestion = index;
+            const question = quizData[index];
+            const content = document.getElementById('questionContent');
+            
+            // Update question number
+            document.getElementById('currentQuestionNum').textContent = index + 1;
+            
+            // Generate question HTML based on type
+            let questionHTML = `<div class="question-slide active">`;
+            questionHTML += `<h3 class="text-lg font-medium text-gray-800 mb-6">${question.question}</h3>`;
+            
+            if (question.type === 'multiple-choice') {
+                questionHTML += '<div class="space-y-3">';
+                question.options.forEach((option, i) => {
+                    const isChecked = answers[question.id] === i ? 'checked' : '';
+                    questionHTML += `
+                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="radio" name="q${question.id}" value="${i}" ${isChecked} 
+                                   onchange="saveAnswer(${question.id}, ${i})" class="mr-3 text-indigo-600">
+                            <span class="text-gray-700">${option}</span>
+                        </label>
+                    `;
+                });
+                questionHTML += '</div>';
+            } else if (question.type === 'true-false') {
+                const trueChecked = answers[question.id] === true ? 'checked' : '';
+                const falseChecked = answers[question.id] === false ? 'checked' : '';
+                questionHTML += `
+                    <div class="space-y-3">
+                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="radio" name="q${question.id}" value="true" ${trueChecked} 
+                                   onchange="saveAnswer(${question.id}, true)" class="mr-3 text-indigo-600">
+                            <span class="text-gray-700">True</span>
+                        </label>
+                        <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                            <input type="radio" name="q${question.id}" value="false" ${falseChecked} 
+                                   onchange="saveAnswer(${question.id}, false)" class="mr-3 text-indigo-600">
+                            <span class="text-gray-700">False</span>
+                        </label>
+                    </div>
+                `;
+            } else if (question.type === 'short-answer') {
+                const value = answers[question.id] || '';
+                questionHTML += `
+                    <textarea id="shortAnswer${question.id}" rows="4" 
+                              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                              placeholder="Type your answer here..."
+                              onchange="saveAnswer(${question.id}, this.value)">${value}</textarea>
+                `;
+            }
+            
+            questionHTML += '</div>';
+            content.innerHTML = questionHTML;
+            
+            // Update navigation
+            updateQuestionNavigation();
+            updateNavigationButtons();
+            updateFlagButton();
+        }
+
+        // Save answer
+        function saveAnswer(questionId, answer) {
+            answers[questionId] = answer;
+            updateProgress();
+            updateQuestionNavigation();
+            showSaveStatus();
+        }
+
+        // Show save status
+        function showSaveStatus() {
+            const status = document.getElementById('saveStatus');
+            status.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>Saving...';
+            
+            setTimeout(() => {
+                status.innerHTML = '<i class="fas fa-check mr-1"></i>Saved';
+                setTimeout(() => {
+                    status.innerHTML = '<i class="fas fa-save mr-1"></i>Auto-saved';
+                }, 1000);
+            }, 500);
+        }
+
+        // Update question navigation
+        function updateQuestionNavigation() {
+            const navButtons = document.querySelectorAll('.question-nav-item');
+            navButtons.forEach((btn, index) => {
+                btn.className = 'question-nav-item w-8 h-8 rounded text-sm font-medium border-2';
+                
+                if (index === currentQuestion) {
+                    btn.className += ' border-indigo-600 bg-indigo-600 text-white';
+                } else if (answers[quizData[index].id] !== undefined) {
+                    btn.className += ' border-green-500 bg-green-500 text-white';
+                } else {
+                    btn.className += ' border-gray-200 bg-gray-100 text-gray-600 hover:bg-gray-200';
+                }
+                
+                if (flaggedQuestions.has(quizData[index].id)) {
+                    btn.style.position = 'relative';
+                    if (!btn.querySelector('.flag-indicator')) {
+                        const flag = document.createElement('div');
+                        flag.className = 'flag-indicator absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full';
+                        btn.appendChild(flag);
+                    }
+                }
+            });
+        }
+
+        // Update navigation buttons
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === quizData.length - 1) {
+                nextBtn.innerHTML = 'Review & Submit<i class="fas fa-check ml-2"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next<i class="fas fa-chevron-right ml-2"></i>';
+            }
+        }
+
+        // Update flag button
+        function updateFlagButton() {
+            const flagBtn = document.getElementById('flagBtn');
+            const questionId = quizData[currentQuestion].id;
+            
+            if (flaggedQuestions.has(questionId)) {
+                flagBtn.innerHTML = '<i class="fas fa-flag mr-2"></i>Unflag';
+                flagBtn.className = 'px-4 py-2 border border-yellow-500 text-yellow-800 bg-yellow-100 rounded-lg hover:bg-yellow-200';
+            } else {
+                flagBtn.innerHTML = '<i class="fas fa-flag mr-2"></i>Flag for Review';
+                flagBtn.className = 'px-4 py-2 border border-yellow-300 text-yellow-700 bg-yellow-50 rounded-lg hover:bg-yellow-100';
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            const answered = Object.keys(answers).length;
+            const total = quizData.length;
+            const percentage = Math.round((answered / total) * 100);
+            
+            document.getElementById('answeredCount').textContent = `${answered}/${total}`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.getElementById('progressPercent').textContent = `${percentage}%`;
+        }
+
+        // Timer functions
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 300 && timeLeft > 0) { // 5 minutes warning
+                    document.getElementById('timerContainer').className = 'bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2 timer-warning';
+                    if (timeLeft === 300) {
+                        showTimeWarning();
+                    }
+                } else if (timeLeft <= 60) { // 1 minute critical
+                    document.getElementById('timerContainer').className = 'bg-red-50 border border-red-200 rounded-lg px-4 py-2 timer-critical';
+                }
+                
+                if (timeLeft <= 0) {
+                    autoSubmitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function showTimeWarning() {
+            document.getElementById('timeWarningModal').classList.remove('hidden');
+        }
+
+        // Event listeners
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                loadQuestion(currentQuestion - 1);
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentQuestion < quizData.length - 1) {
+                loadQuestion(currentQuestion + 1);
+            } else {
+                showSubmitModal();
+            }
+        });
+
+        document.getElementById('flagBtn').addEventListener('click', () => {
+            const questionId = quizData[currentQuestion].id;
+            if (flaggedQuestions.has(questionId)) {
+                flaggedQuestions.delete(questionId);
+            } else {
+                flaggedQuestions.add(questionId);
+            }
+            updateFlagButton();
+            updateQuestionNavigation();
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            const questionId = quizData[currentQuestion].id;
+            delete answers[questionId];
+            loadQuestion(currentQuestion);
+            updateProgress();
+        });
+
+        document.getElementById('fullscreenBtn').addEventListener('click', () => {
+            toggleFullscreen();
+        });
+
+        document.getElementById('submitExamBtn').addEventListener('click', () => {
+            showSubmitModal();
+        });
+
+        document.getElementById('closeTimeWarning').addEventListener('click', () => {
+            document.getElementById('timeWarningModal').classList.add('hidden');
+        });
+
+        // Submit modal functions
+        function showSubmitModal() {
+            const answered = Object.keys(answers).length;
+            const unanswered = quizData.length - answered;
+            const flagged = flaggedQuestions.size;
+            
+            let summaryHTML = `
+                <p class="mb-2">You have answered <strong>${answered}</strong> out of <strong>${quizData.length}</strong> questions.</p>
+            `;
+            
+            if (unanswered > 0) {
+                summaryHTML += `<p class="mb-2 text-red-600">⚠️ <strong>${unanswered}</strong> questions are unanswered.</p>`;
+            }
+            
+            if (flagged > 0) {
+                summaryHTML += `<p class="mb-2 text-yellow-600">🏁 <strong>${flagged}</strong> questions are flagged for review.</p>`;
+            }
+            
+            summaryHTML += `<p class="mt-4 text-sm text-gray-500">Once submitted, you cannot make changes.</p>`;
+            
+            document.getElementById('submitSummary').innerHTML = summaryHTML;
+            document.getElementById('submitModal').classList.remove('hidden');
+        }
+
+        document.getElementById('cancelSubmit').addEventListener('click', () => {
+            document.getElementById('submitModal').classList.add('hidden');
+        });
+
+        document.getElementById('confirmSubmit').addEventListener('click', () => {
+            submitQuiz();
+        });
+
+        // Submit quiz
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            // Calculate score (for demo purposes)
+            let score = 0;
+            quizData.forEach(question => {
+                const userAnswer = answers[question.id];
+                if (question.type === 'multiple-choice' && userAnswer === question.correct) {
+                    score++;
+                } else if (question.type === 'true-false' && userAnswer === question.correct) {
+                    score++;
+                } else if (question.type === 'short-answer' && userAnswer) {
+                    // For demo, give credit if answered
+                    score++;
+                }
+            });
+            
+            const percentage = Math.round((score / quizData.length) * 100);
+            
+            alert(`Quiz submitted successfully!\n\nYour Score: ${score}/${quizData.length} (${percentage}%)\n\nYou will receive detailed results via email.`);
+            
+            // In a real application, this would redirect to results page
+            window.location.href = '#results';
+        }
+
+        function autoSubmitQuiz() {
+            alert('Time is up! Your quiz has been automatically submitted.');
+            submitQuiz();
+        }
+
+        // Fullscreen functionality
+        function toggleFullscreen() {
+            const container = document.getElementById('examContainer');
+            const btn = document.getElementById('fullscreenBtn');
+            
+            if (!isFullscreen) {
+                container.classList.add('fullscreen-mode');
+                btn.innerHTML = '<i class="fas fa-compress text-xl"></i>';
+                btn.title = 'Exit Fullscreen';
+                isFullscreen = true;
+            } else {
+                container.classList.remove('fullscreen-mode');
+                btn.innerHTML = '<i class="fas fa-expand text-xl"></i>';
+                btn.title = 'Toggle Fullscreen';
+                isFullscreen = false;
+            }
+        }
+
+        // No security restrictions - normal browsing experience
+
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            if (Object.keys(answers).length > 0) {
+                console.log('Auto-saving quiz progress...');
+                // In a real app, this would save to server
+            }
+        }, 30000);
+
+        // Initialize quiz when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeQuiz();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'95aea56343c43378',t:'MTc1MTgwMDEyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
