@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightEdu - Instructor Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+
+        .notification-dot {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Adjust layout for sidebar t */
+        .main-content {
+            margin-left: 16rem;
+            padding-top: 4rem;
+            background-color: #f9fafb;
+            min-height: calc(100vh - 4rem);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 4rem;
+            left: 0;
+            width: 16rem;
+            height: calc(100vh - 4rem);
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 30;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-lg border-b border-gray-200 fixed w-full top-0 z-40">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo & Menu Toggle -->
+                <div class="flex items-center">
+                    <button id="sidebarToggle"
+                        class="p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-100 lg:hidden">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center ml-2 lg:ml-0">
+                        <i class="fas fa-graduation-cap text-2xl text-indigo-600 mr-3"></i>
+                        <h1 class="text-xl font-bold text-gray-800">InsightEdu</h1>
+                        <span
+                            class="ml-2 text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded-full">Instructor</span>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+
+
+                    <!-- Notifications -->
+                    <div class="relative" id="notificationWrapper">
+                      <button id="notificationBtn" class="p-2 text-gray-600 hover:text-indigo-600 relative focus:outline-none">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-dot absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                      </button>
+                      <!-- Notification Popup -->
+                      <div id="notificationPopup" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50 animate-fade-in">
+                        <div class="p-4 border-b border-gray-100 flex items-center justify-between">
+                          <span class="font-semibold text-gray-800 text-base">Notifications</span>
+                          <button id="closeNotificationPopup" class="text-gray-400 hover:text-red-500 text-lg focus:outline-none">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                        <div class="p-4 space-y-3 max-h-72 overflow-y-auto">
+                          <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-full">
+                              <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <div>
+                              <p class="text-sm text-gray-800 font-medium">Midterm Exam Schedule Released</p>
+                              <p class="text-xs text-gray-500">Web Engineering • 2 hours ago</p>
+                            </div>
+                          </div>
+                          <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-green-100 text-green-600 flex items-center justify-center rounded-full">
+                              <i class="fas fa-book"></i>
+                            </div>
+                            <div>
+                              <p class="text-sm text-gray-800 font-medium">New Learning Materials Uploaded</p>
+                              <p class="text-xs text-gray-500">Embedded System • 1 day ago</p>
+                            </div>
+                          </div>
+                          <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-yellow-100 text-yellow-600 flex items-center justify-center rounded-full">
+                              <i class="fas fa-file-upload"></i>
+                            </div>
+                            <div>
+                              <p class="text-sm text-gray-800 font-medium">Assignment Due Soon</p>
+                              <p class="text-xs text-gray-500">Software Engineering • 3 days left</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Profile Dropdown -->
+                    <div class="relative">
+                        <button id="profileBtn" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100">
+                            <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-medium">MFZ</span>
+                            </div>
+                            <div class="text-left hidden sm:block">
+                                <p class="text-sm font-medium text-gray-700">Mir Faiyaz Hossain</p>
+                                <p class="text-xs text-gray-500">Instructor</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="profileMenu"
+                            class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>Profile Settings
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-cog mr-2"></i>Course Settings
+                            </a>
+                            <hr class="my-1">
+                            <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="flex flex-col h-full">
+            <!-- Sidebar Header -->
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                        <span class="text-white font-medium">MFZ</span>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-800">Mir Faiyaz Hossain</p>
+                        <p class="text-xs text-gray-500">Computer Science Dept.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#"
+                    class="nav-item active flex items-center px-4 py-3 text-sm font-medium rounded-lg bg-purple-100 text-purple-700">
+                    <i class="fas fa-home mr-3 text-lg"></i>
+                    Dashboard
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-chalkboard-teacher mr-3 text-lg"></i>
+                    My Courses
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-users mr-3 text-lg"></i>
+                    Students
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-tasks mr-3 text-lg"></i>
+                    Assignments
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-clipboard-check mr-3 text-lg"></i>
+                    Exams & Quizzes
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-chart-line mr-3 text-lg"></i>
+                    Gradebook
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-bullhorn mr-3 text-lg"></i>
+                    Announcements
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-calendar-alt mr-3 text-lg"></i>
+                    Schedule
+                </a>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-200 my-4"></div>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-plus-circle mr-3 text-lg"></i>
+                    Create Course
+                </a>
+
+                <a href="#"
+                    class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-chart-bar mr-3 text-lg"></i>
+                    Analytics
+                </a>
+            </nav>
+
+            <!-- Sidebar Footer -->
+            <div class="px-4 py-4 border-t border-gray-200">
+                <a href="#"
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
+                    <i class="fas fa-question-circle mr-3 text-lg"></i>
+                    Help & Support
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="main-content lg:ml-64 pt-16 min-h-screen">
+        <div class="px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Welcome Section -->
+            <div class="gradient-bg rounded-2xl p-8 mb-8 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">Good morning, Mir Faiyaz Hossain, 👨‍🏫</h2>
+                        <p class="text-white/90">You have 15 assignments to grade and 3 classes scheduled today.</p>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="text-right">
+                            <p class="text-white/80 text-sm">Current Semester</p>
+                            <p class="text-xl font-semibold">Summer 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <i class="fas fa-chalkboard-teacher text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Active Courses</p>
+                            <p class="text-2xl font-bold text-gray-800">2</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <i class="fas fa-users text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Total Students</p>
+                            <p class="text-2xl font-bold text-gray-800">87</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-orange-100 rounded-lg">
+                            <i class="fas fa-clipboard-check text-orange-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Pending Grades</p>
+                            <p class="text-2xl font-bold text-gray-800">15</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg">
+                            <i class="fas fa-calendar-check text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Today's Classes</p>
+                            <p class="text-2xl font-bold text-gray-800">3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left Column -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- My Courses -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+<h3 class="text-lg font-semibold text-gray-800">My Courses</h3>
+<button class="text-purple-600 hover:text-purple-700 text-sm font-medium">View All</button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <!-- Course 1 -->
+                                <div
+                                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-laptop-code text-white"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-medium text-gray-800">Web Engineering</h4>
+                                            <p class="text-sm text-gray-600">CSE 4101 • 45 students</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span
+                                            class="text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">Active</span>
+                                        <p class="text-xs text-gray-500 mt-1">Next: Today 2:00 PM</p>
+                                    </div>
+                                </div>
+
+                                <!-- Course 2 -->
+                                <div
+                                    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                                            <i class="fab fa-java text-white"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h4 class="font-medium text-gray-800">Java</h4>
+                                            <p class="text-sm text-gray-600">CSE 4202 • 42 students</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span
+                                            class="text-sm bg-green-100 text-green-700 px-2 py-1 rounded-full">Active</span>
+                                        <p class="text-xs text-gray-500 mt-1">Next: Tomorrow 10:00 AM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Assignments to Grade -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+<h3 class="text-lg font-semibold text-gray-800">Assignments to Grade</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <!-- Only Web Engineering Quiz Pending -->
+                                <div class="flex items-center justify-between p-4 border border-orange-200 bg-orange-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-orange-500 rounded-full mr-4"></div>
+                                        <div>
+                                            <h4 class="font-medium text-gray-800">Web Engineering Quiz - Marks Pending</h4>
+                                            <p class="text-sm text-gray-600">Web Engineering • 8 submissions pending</p>
+                                        </div>
+                                    </div>
+                                    <button class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm font-medium">
+                                        Grade Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="space-y-8">
+                    <!-- Today's Schedule -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">Today's Schedule</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <!-- Class 1 -->
+                                <div class="flex items-center p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-800 text-sm">Web Development</h4>
+                                        <p class="text-xs text-gray-600">Room 301 • 2:00 PM - 3:30 PM</p>
+                                    </div>
+                                    <span class="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">Next</span>
+                                </div>
+
+                                <!-- Class 2 (Java) -->
+                                <div class="flex items-center p-3 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-800 text-sm">Java</h4>
+                                        <p class="text-xs text-gray-600">Room 205 • 4:00 PM - 5:30 PM</p>
+                                    </div>
+                                    <span class="text-xs bg-green-600 text-white px-2 py-1 rounded-full">Later</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Student Activity -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <!-- Activity 1: Web Engineering -->
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-upload text-blue-600 text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-800">Assignment submitted in Web Engineering</p>
+                                        <p class="text-xs text-gray-500">2 minutes ago</p>
+                                    </div>
+                                </div>
+
+                                <!-- Activity 2: Java -->
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fab fa-java text-green-600 text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-800">Quiz completed in Java</p>
+                                        <p class="text-xs text-gray-500">15 minutes ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">Quick Actions</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button
+                                    class="p-3 bg-blue-50 hover:bg-blue-100 rounded-lg text-center transition-colors">
+                                    <i class="fas fa-plus text-blue-600 text-lg mb-2"></i>
+                                    <p class="text-xs text-blue-700 font-medium">Create Assignment</p>
+                                </button>
+
+                                <button
+                                    class="p-3 bg-green-50 hover:bg-green-100 rounded-lg text-center transition-colors">
+                                    <i class="fas fa-bullhorn text-green-600 text-lg mb-2"></i>
+                                    <p class="text-xs text-green-700 font-medium">Send Announcement</p>
+                                </button>
+
+                                <button
+                                    class="p-3 bg-purple-50 hover:bg-purple-100 rounded-lg text-center transition-colors">
+                                    <i class="fas fa-chart-bar text-purple-600 text-lg mb-2"></i>
+                                    <p class="text-xs text-purple-700 font-medium">View Analytics</p>
+                                </button>
+
+                                <button
+                                    class="p-3 bg-orange-50 hover:bg-orange-100 rounded-lg text-center transition-colors">
+                                    <i class="fas fa-calendar-plus text-orange-600 text-lg mb-2"></i>
+                                    <p class="text-xs text-orange-700 font-medium">Schedule Class</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar toggle functionality
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        sidebarToggle.addEventListener('click', function () {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('hidden');
+        });
+
+        sidebarOverlay.addEventListener('click', function () {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.add('hidden');
+        });
+
+
+        // Profile dropdown functionality
+        const profileBtn = document.getElementById('profileBtn');
+        const profileMenu = document.getElementById('profileMenu');
+
+        profileBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            profileMenu.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function () {
+            profileMenu.classList.add('hidden');
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        profileMenu.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Notification popup functionality (same as student dashboard)
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationPopup = document.getElementById('notificationPopup');
+        const closeNotificationPopup = document.getElementById('closeNotificationPopup');
+        const notificationWrapper = document.getElementById('notificationWrapper');
+
+        notificationBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            notificationPopup.classList.toggle('hidden');
+        });
+
+        if (closeNotificationPopup) {
+            closeNotificationPopup.addEventListener('click', function (e) {
+                e.stopPropagation();
+                notificationPopup.classList.add('hidden');
+            });
+        }
+
+        document.addEventListener('click', function (e) {
+            if (!notificationWrapper.contains(e.target)) {
+                notificationPopup.classList.add('hidden');
+            }
+        });
+
+        // Navigation menu active state
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Remove active class from all items
+                navItems.forEach(nav => {
+                    nav.classList.remove('active', 'bg-purple-100', 'text-purple-700');
+                    nav.classList.add('text-gray-600');
+                });
+
+                // Add active class to clicked item
+                this.classList.add('active', 'bg-purple-100', 'text-purple-700');
+                this.classList.remove('text-gray-600');
+
+                // Close sidebar on mobile after selection
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.remove('open');
+                    sidebarOverlay.classList.add('hidden');
+                }
+            });
+        });
+
+        // Quick action buttons functionality
+        const quickActionBtns = document.querySelectorAll('.bg-blue-50, .bg-green-50, .bg-purple-50, .bg-orange-50');
+        quickActionBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const action = this.querySelector('p').textContent;
+                alert(`${action} feature will be implemented soon!`);
+            });
+        });
+
+        // Grade buttons functionality
+        const gradeBtns = document.querySelectorAll('button:contains("Grade Now")');
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.textContent.includes('Grade Now')) {
+                btn.addEventListener('click', function () {
+                    alert('Opening grading interface...');
+                });
+            }
+        });
+
+        // Simulate real-time updates
+        function updateDashboard() {
+            console.log('Teacher dashboard updated at:', new Date().toLocaleTimeString());
+        }
+
+        // Update dashboard every 30 seconds
+        setInterval(updateDashboard, 30000);
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'95ae7b39d0853366',t:'MTc1MTc5ODM5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
