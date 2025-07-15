@@ -81,7 +81,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
-                    <button onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100">
+                    <button type="button" onclick="goBack()" class="mr-4 p-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100" title="Back to Dashboard">
                         <i class="fas fa-arrow-left text-xl"></i>
                     </button>
                     <i class="fas fa-tasks text-2xl text-indigo-600 mr-3"></i>
@@ -91,10 +91,10 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button onclick="saveDraft()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
+                    <button type="button" onclick="saveDraft()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
                         <i class="fas fa-save mr-2"></i>Save Draft
                     </button>
-                    <button onclick="previewAssignment()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                    <button type="button" onclick="previewAssignment()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
                         <i class="fas fa-eye mr-2"></i>Preview
                     </button>
                     <div class="text-right">
@@ -145,7 +145,7 @@
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Assignment Title *</label>
-                                    <input type="text" id="assignmentTitle" required
+                                    <input type="text" id="assignmentTitle" required title="Assignment Title" placeholder="e.g., Data Structures Final Project"
                                            placeholder="e.g., Data Structures Final Project"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 </div>
@@ -202,19 +202,19 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Assign Date *</label>
-                                    <input type="datetime-local" id="assignDate" required
+                                    <input type="datetime-local" id="assignDate" required title="Assign Date"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Due Date *</label>
-                                    <input type="datetime-local" id="dueDate" required
+                                    <input type="datetime-local" id="dueDate" required title="Due Date"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Total Points *</label>
-                                    <input type="number" id="totalPoints" required min="1" max="1000" value="100"
+                                    <input type="number" id="totalPoints" required min="1" max="1000" value="100" title="Total Points"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                                 </div>
                             </div>
@@ -228,7 +228,7 @@
                                 </div>
                                 <div id="latePenaltySection" class="hidden">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Late Penalty (%/day)</label>
-                                    <input type="number" id="latePenalty" min="0" max="100" value="10"
+                                    <input type="number" id="latePenalty" min="0" max="100" value="10" title="Late Penalty Percentage per Day"
                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                                 </div>
                             </div>
@@ -280,15 +280,15 @@
                         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <h4 class="font-semibold text-gray-800 mb-4">Recent Templates</h4>
                             <div class="space-y-2">
-                                <button onclick="loadTemplate('project')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                <button type="button" onclick="loadTemplate('project')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
                                     <div class="font-medium text-sm text-gray-800">Programming Project</div>
                                     <div class="text-xs text-gray-500">Used 3 times</div>
                                 </button>
-                                <button onclick="loadTemplate('quiz')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                <button type="button" onclick="loadTemplate('quiz')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
                                     <div class="font-medium text-sm text-gray-800">Weekly Quiz</div>
                                     <div class="text-xs text-gray-500">Used 8 times</div>
                                 </button>
-                                <button onclick="loadTemplate('lab')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                <button type="button" onclick="loadTemplate('lab')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
                                     <div class="font-medium text-sm text-gray-800">Lab Assignment</div>
                                     <div class="text-xs text-gray-500">Used 5 times</div>
                                 </button>
@@ -358,7 +358,7 @@ Example:
                                     <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
                                     <p class="text-lg font-medium text-gray-700 mb-2">Drop files here or click to upload</p>
                                     <p class="text-sm text-gray-500">Support: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP (Max: 50MB each)</p>
-                                    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" class="hidden">
+                                    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" class="hidden" title="Upload files" placeholder="Upload files">
                                 </div>
 
                                 <!-- Uploaded Files List -->
@@ -402,7 +402,7 @@ Example:
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Max File Size (MB)</label>
-                                        <input type="number" id="maxFileSize" min="1" max="100" value="10"
+                                        <input type="number" id="maxFileSize" min="1" max="100" value="10" title="Maximum File Size in MB" placeholder="Max file size (MB)">
                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
                                     </div>
                                 </div>
@@ -465,15 +465,15 @@ Example:
                         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                             <h4 class="font-semibold text-gray-800 mb-4">Content Templates</h4>
                             <div class="space-y-2">
-                                <button onclick="insertTemplate('programming')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                <button type="button" onclick="insertTemplate('programming')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
                                     <div class="font-medium text-sm text-gray-800">Programming Assignment</div>
                                     <div class="text-xs text-gray-500">Code submission template</div>
                                 </button>
-                                <button onclick="insertTemplate('essay')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                <button type="button" onclick="insertTemplate('essay')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
                                     <div class="font-medium text-sm text-gray-800">Essay Assignment</div>
                                     <div class="text-xs text-gray-500">Written work template</div>
                                 </button>
-                                <button onclick="insertTemplate('research')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
+                                <button type="button" onclick="insertTemplate('research')" class="w-full text-left p-3 rounded-lg hover:bg-gray-50 border border-gray-100">
                                     <div class="font-medium text-sm text-gray-800">Research Project</div>
                                     <div class="text-xs text-gray-500">Research paper template</div>
                                 </button>
@@ -583,7 +583,7 @@ Example:
                                             <input type="checkbox" id="limitAttempts" class="rounded mr-2">
                                             <span class="text-sm text-gray-700">Limit Submission Attempts</span>
                                         </label>
-                                        <input type="number" id="maxAttempts" min="1" max="10" value="3" 
+                                        <input type="number" id="maxAttempts" min="1" max="10" value="3" title="Maximum Submission Attempts" placeholder="Max attempts">
                                                class="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 hidden">
                                     </div>
                                 </div>
@@ -1190,7 +1190,7 @@ Requirements:
 
         function goBack() {
             if (confirm('Are you sure you want to leave? Unsaved changes will be lost.')) {
-                alert('Returning to assignments list...');
+                window.location.href = 'instructor-dashboard.html';
             }
         }
 

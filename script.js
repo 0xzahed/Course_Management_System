@@ -124,10 +124,8 @@ loginForm.addEventListener('submit', function (e) {
                 if (selectedRole === 'student') {
                     window.location.href = 'student-dashboard.html';
                 } else if (selectedRole === 'instructor') {
-                    // For now, redirect to student dashboard (can be changed later)
-                    window.location.href = 'student-dashboard.html';
+                    window.location.href = 'instructor-dashboard.html';
                 } else if (selectedRole === 'admin') {
-                    // For now, redirect to student dashboard (can be changed later)
                     window.location.href = 'student-dashboard.html';
                 }
             }, 1000);
