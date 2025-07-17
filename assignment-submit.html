@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -60,13 +59,13 @@
     </style>
   </head>
   <body class="bg-gray-50 min-h-screen">
-    
+    <!-- Navigation Header -->
     <nav
       class="bg-white shadow-lg border-b border-gray-200 fixed w-full top-0 z-40"
     >
       <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          
+          <!-- Back Button & Assignment Title -->
           <div class="flex items-center">
             <button
               onclick="goBack()"
@@ -85,7 +84,7 @@
             </div>
           </div>
 
-          
+          <!-- Save & Submit Actions -->
           <div class="flex items-center space-x-3">
             <button
               id="saveDraftBtn"
@@ -104,13 +103,13 @@
       </div>
     </nav>
 
-    
+    <!-- Main Content -->
     <div class="pt-16 min-h-screen">
-      
+      <!-- Assignment Header -->
       <div class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            
+            <!-- Assignment Info -->
             <div class="lg:col-span-3">
               <h1 class="text-2xl font-bold text-gray-800 mb-2">
                 React Project Submission
@@ -121,7 +120,7 @@
                 your understanding of modern React development practices.
               </p>
 
-              
+              <!-- Assignment Meta -->
               <div
                 class="flex flex-wrap items-center gap-4 text-sm text-gray-600"
               >
@@ -144,7 +143,7 @@
               </div>
             </div>
 
-            
+            <!-- Due Date Countdown -->
             <div class="bg-red-50 border border-red-200 rounded-xl p-4">
               <div class="text-center">
                 <i
@@ -163,12 +162,12 @@
         </div>
       </div>
 
-      
+      <!-- Main Content Grid -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+          <!-- Left Column - Submission Form -->
           <div class="lg:col-span-2 space-y-8">
-            
+            <!-- File Upload Section -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div class="p-6 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">
@@ -180,7 +179,7 @@
                 </p>
               </div>
               <div class="p-6">
-                
+                <!-- Upload Area -->
                 <div
                   id="uploadArea"
                   class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-indigo-400 hover:bg-indigo-50 cursor-pointer transition-all"
@@ -217,22 +216,20 @@
                     class="hidden"
                     multiple
                     accept=".zip,.rar,.js,.jsx,.html,.css,.json,.md,.txt"
-                    title="Upload your assignment files"
-                    placeholder="Choose files to upload"
                   />
                 </div>
 
-                
+                <!-- Uploaded Files List -->
                 <div id="filesList" class="mt-6 space-y-3 hidden">
                   <h4 class="font-medium text-gray-800">Uploaded Files</h4>
                   <div id="filesContainer" class="space-y-2">
-                    
+                    <!-- Files will be dynamically added here -->
                   </div>
                 </div>
               </div>
             </div>
 
-            
+            <!-- Project Description -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div class="p-6 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">
@@ -263,7 +260,7 @@
               </div>
             </div>
 
-            
+            <!-- Project URL (Optional) -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div class="p-6 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">
@@ -301,7 +298,7 @@
               </div>
             </div>
 
-            
+            <!-- Submission History -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div class="p-6 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">
@@ -313,7 +310,7 @@
               </div>
               <div class="p-6">
                 <div class="space-y-4">
-                  
+                  <!-- Draft Submission -->
                   <div
                     class="flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
                   >
@@ -332,7 +329,7 @@
                     >
                   </div>
 
-                  
+                  <!-- No Previous Submissions -->
                   <div class="text-center py-8 text-gray-500">
                     <i class="fas fa-inbox text-4xl mb-4"></i>
                     <p>No previous submissions</p>
@@ -343,9 +340,9 @@
             </div>
           </div>
 
-          
+          <!-- Right Column - Assignment Details -->
           <div class="space-y-6">
-            
+            <!-- Assignment Requirements -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div class="p-6 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">
@@ -405,7 +402,7 @@
               </div>
             </div>
 
-            
+            <!-- Grading Rubric -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div class="p-6 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800">
@@ -443,7 +440,7 @@
               </div>
             </div>
 
-            
+            <!-- Submission Guidelines -->
             <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
               <h3 class="text-lg font-semibold text-blue-800 mb-4">
                 <i class="fas fa-info-circle mr-2"></i>Submission Guidelines
@@ -468,7 +465,7 @@
               </div>
             </div>
 
-            
+            <!-- Contact Instructor -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
               <div class="p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">
@@ -507,7 +504,7 @@
       </div>
     </div>
 
-    
+    <!-- Submission Confirmation Modal -->
     <div
       id="confirmModal"
       class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
@@ -545,19 +542,19 @@
     </div>
 
     <script>
-      
+      // File upload functionality
       const uploadArea = document.getElementById("uploadArea");
       const fileInput = document.getElementById("fileInput");
       const filesList = document.getElementById("filesList");
       const filesContainer = document.getElementById("filesContainer");
       let uploadedFiles = [];
 
-      
+      // Click to upload
       uploadArea.addEventListener("click", () => {
         fileInput.click();
       });
 
-      
+      // Drag and drop functionality
       uploadArea.addEventListener("dragover", (e) => {
         e.preventDefault();
         uploadArea.classList.add("dragover");
@@ -574,13 +571,13 @@
         handleFiles(files);
       });
 
-      
+      // File input change
       fileInput.addEventListener("change", (e) => {
         const files = Array.from(e.target.files);
         handleFiles(files);
       });
 
-      
+      // Handle uploaded files
       function handleFiles(files) {
         files.forEach((file) => {
           if (file.size > 50 * 1024 * 1024) {
@@ -600,7 +597,7 @@
         simulateUpload();
       }
 
-      
+      // Display uploaded files
       function displayFiles() {
         if (uploadedFiles.length > 0) {
           filesList.classList.remove("hidden");
@@ -643,7 +640,7 @@
         }
       }
 
-      
+      // Simulate file upload
       function simulateUpload() {
         uploadedFiles.forEach((fileObj) => {
           if (!fileObj.uploaded) {
@@ -655,7 +652,7 @@
         });
       }
 
-      
+      // Remove file
       function removeFile(fileId) {
         uploadedFiles = uploadedFiles.filter((f) => f.id !== fileId);
         displayFiles();
@@ -664,7 +661,7 @@
         }
       }
 
-      
+      // Get file icon based on extension
       function getFileIcon(filename) {
         const ext = filename.split(".").pop().toLowerCase();
         const icons = {
@@ -681,7 +678,7 @@
         return icons[ext] || "fas fa-file text-gray-500";
       }
 
-    
+      // Format file size
       function formatFileSize(bytes) {
         if (bytes === 0) return "0 Bytes";
         const k = 1024;
@@ -690,7 +687,7 @@
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
       }
 
-      
+      // Character count for description
       const projectDescription = document.getElementById("projectDescription");
       const charCount = document.getElementById("charCount");
 
@@ -706,7 +703,7 @@
         }
       });
 
-      
+      // Countdown timer
       function updateCountdown() {
         const dueDate = new Date("2024-10-25T23:59:59");
         const now = new Date();
@@ -729,11 +726,11 @@
         }
       }
 
-      
+      // Update countdown every minute
       updateCountdown();
       setInterval(updateCountdown, 60000);
 
-      
+      // Save draft functionality
       document
         .getElementById("saveDraftBtn")
         .addEventListener("click", function () {
@@ -741,7 +738,7 @@
           const liveUrl = document.getElementById("liveUrl").value;
           const githubUrl = document.getElementById("githubUrl").value;
 
-          
+          // Simulate saving draft
           this.innerHTML =
             '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
           this.disabled = true;
@@ -766,7 +763,7 @@
           }, 1000);
         });
 
-      
+      // Submit assignment functionality
       const submitBtn = document.getElementById("submitBtn");
       const confirmModal = document.getElementById("confirmModal");
       const cancelSubmit = document.getElementById("cancelSubmit");
@@ -786,7 +783,7 @@
       });
 
       confirmSubmit.addEventListener("click", function () {
-        
+        // Simulate submission
         confirmModal.classList.add("hidden");
 
         submitBtn.innerHTML =
@@ -797,23 +794,23 @@
           alert(
             "Assignment submitted successfully! You will receive a confirmation email shortly."
           );
-          
+          // In a real app, this would redirect to a success page
         }, 2000);
       });
 
-      
+      // Back button functionality
       function goBack() {
         if (
           confirm(
             "Are you sure you want to leave? Any unsaved changes will be lost."
           )
         ) {
-          
+          // In a real app, this would navigate back
           alert("Navigating back to course page...");
         }
       }
 
-      
+      // Contact buttons functionality
       document.querySelectorAll(".bg-gray-50").forEach((btn) => {
         if (btn.querySelector(".fa-envelope")) {
           btn.addEventListener("click", () => alert("Opening email client..."));
@@ -828,7 +825,7 @@
         }
       });
 
-      
+      // Auto-save functionality (every 30 seconds)
       setInterval(() => {
         const description = projectDescription.value;
         const liveUrl = document.getElementById("liveUrl").value;
@@ -836,11 +833,11 @@
 
         if (description || liveUrl || githubUrl || uploadedFiles.length > 0) {
           console.log("Auto-saving draft...");
-          
+          // In a real app, this would save to the server
         }
       }, 30000);
 
-      
+      // Warn before leaving page with unsaved changes
       window.addEventListener("beforeunload", function (e) {
         const description = projectDescription.value;
         const liveUrl = document.getElementById("liveUrl").value;
@@ -889,7 +886,3 @@
     </script>
   </body>
 </html>
-
-
-
-
