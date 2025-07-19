@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradebook - Data Structures & Algorithms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradebook-table {
+            font-size: 0.875rem;
+        }
+
+        .grade-cell {
+            transition: all 0.2s ease;
+            min-width: 80px;
+        }
+
+        .grade-cell:hover {
+            background-color: #f0f9ff;
+            transform: scale(1.02);
+        }
+
+        .grade-input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid transparent;
+            background: transparent;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+
+        .grade-input:focus {
+            border-color: #3b82f6;
+            background: white;
+            outline: none;
+        }
+
+        .student-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .grade-a {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .grade-b {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .grade-c {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .grade-d {
+            background-color: #fed7aa;
+            color: #c2410c;
+        }
+
+        .grade-f {
+            background-color: #fecaca;
+            color: #dc2626;
+        }
+
+        .assignment-header {
+            min-width: 80px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            white-space: normal;
+        }
+
+        .sticky-column {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 10;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 20;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .stats-card {
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .grade-trend-up {
+            color: #10b981;
+        }
+
+        .grade-trend-down {
+            color: #ef4444;
+        }
+
+        .assignment-category {
+            border-left: 4px solid;
+        }
+
+        .category-exam {
+            border-left-color: #dc2626;
+        }
+
+        .category-quiz {
+            border-left-color: #f59e0b;
+        }
+
+        .category-homework {
+            border-left-color: #3b82f6;
+        }
+
+        .category-project {
+            border-left-color: #10b981;
+        }
+
+        .category-participation {
+            border-left-color: #8b5cf6;
+        }
+
+        /* Mobile responsive overrides */
+        @media (max-width: 640px) {
+            .max-w-7xl {
+                max-width: 100vw !important;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .gradebook-table {
+                font-size: 0.75rem;
+            }
+
+            .assignment-header {
+                min-width: 60px;
+                font-size: 0.75rem;
+                padding: 0.5rem 0.25rem;
+            }
+
+            .grade-cell {
+                min-width: 60px;
+                padding: 0.5rem 0.25rem;
+            }
+
+            .sticky-column {
+                min-width: 120px;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .stats-card {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+
+            .flex {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            .flex-wrap {
+                flex-wrap: wrap !important;
+            }
+
+            .gap-4 {
+                gap: 0.5rem !important;
+            }
+
+            .gap-6 {
+                gap: 0.75rem !important;
+            }
+
+            .overflow-x-auto {
+                overflow-x: auto !important;
+            }
+
+            .rounded-xl {
+                border-radius: 0.75rem !important;
+            }
+
+            .rounded-lg {
+                border-radius: 0.5rem !important;
+            }
+
+            .px-4 {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+
+            .py-3 {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+
+            .w-64 {
+                width: 100% !important;
+            }
+
+            .min-w-48 {
+                min-width: 120px !important;
+            }
+
+            .min-w-24 {
+                min-width: 60px !important;
+            }
+
+            .min-h-screen {
+                min-height: 100vh !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Centered Page Container -->
+    <div class="w-full min-h-screen flex flex-col items-center justify-start">
+        <!-- Header -->
+        <div class="bg-white shadow-lg border-b border-gray-200 w-full flex justify-center">
+            <div class="max-w-7xl w-full">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center w-full">
+                        <div class="flex items-center">
+                            <button onclick="window.location.href='instructor-dashboard.html'"
+                                class="mr-2 text-indigo-600 hover:text-indigo-800 focus:outline-none"
+                                title="Back to Dashboard">
+                                <i class="fas fa-arrow-left text-lg"></i>
+                            </button>
+                            <div
+                                class="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-white text-lg"></i>
+                            </div>
+                        </div>
+                        <div class="ml-3 flex flex-col">
+                            <span class="text-lg font-bold text-gray-800">Gradebook</span>
+                            <div class="flex items-center gap-2 mt-1">
+                                <select id="courseSelect" onchange="changeCourse()"
+                                    class="px-2 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 text-xs font-medium">
+                                    <option value="web">Web Engineering</option>
+                                    <option value="iot">IoT</option>
+                                    <option value="software">Software Engineering</option>
+                                </select>
+                                <p id="courseSession" class="text-xs text-gray-500 -mt-1">- Fall 2024</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <!-- Quick Stats -->
+                        <div class="flex items-center space-x-6 text-sm">
+                            <div class="text-center">
+                                <div class="font-bold text-gray-800">32</div>
+                                <div class="text-gray-500">Students</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-bold text-gray-800">15</div>
+                                <div class="text-gray-500">Assignments</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-bold text-green-600">78.5%</div>
+                                <div class="text-gray-500">Class Avg</div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex gap-2">
+                            <button onclick="exportGrades()"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Controls -->
+        <div class="max-w-7xl w-full py-2">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="flex flex-col gap-3 w-full sm:flex-row sm:items-center sm:gap-4">
+                        <!-- Search Students -->
+                        <div class="relative w-full sm:w-auto">
+                            <i
+                                class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="studentSearch" placeholder="Search students..."
+                                class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 w-full sm:w-64"
+                                oninput="filterStudents()">
+                        </div>
+                        <!-- Grade Range Filter -->
+                        <select id="gradeFilter" onchange="filterByGrade()"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 w-full sm:w-auto">
+                            <option value="">All Grades</option>
+                            <option value="A">A (90-100%)</option>
+                            <option value="B">B (80-89%)</option>
+                            <option value="C">C (70-79%)</option>
+                            <option value="D">D (60-69%)</option>
+                            <option value="F">F (Below 60%)</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2 w-full sm:flex-row sm:items-center sm:gap-2 sm:w-auto">
+                        <!-- View Options -->
+                        <button onclick="toggleView('table')" id="tableViewBtn"
+                            class="filter-badge text-white px-3 py-2 rounded-lg text-sm font-medium w-full sm:w-auto">
+                            <i class="fas fa-table mr-1"></i>Table
+                        </button>
+                        <button onclick="toggleView('analytics')" id="analyticsViewBtn"
+                            class="bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors w-full sm:w-auto">
+                            <i class="fas fa-chart-bar mr-1"></i>Analytics
+                        </button>
+                        <!-- Bulk Actions -->
+                        <button onclick="toggleBulkActions()"
+                            class="bg-yellow-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors w-full sm:w-auto">
+                            <i class="fas fa-edit mr-1"></i>Bulk Edit
+                        </button>
+                    </div>
+                </div>
+                <!-- Active Filters -->
+                <div id="activeFilters" class="mt-3 flex flex-wrap gap-2" style="display: none;">
+                    <!-- Active filter badges will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl w-full pb-4">
+            <!-- Table View -->
+            <div id="tableView" class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                <!-- Assignment Categories Summary -->
+                <div class="p-4 bg-gray-50 border-b border-gray-200">
+                    <div class="flex flex-wrap gap-4">
+                        <div class="assignment-category category-exam bg-white px-3 py-2 rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Midterm (25 marks)</span>
+                        </div>
+                        <div class="assignment-category category-exam bg-white px-3 py-2 rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Final (40 marks)</span>
+                        </div>
+                        <div class="assignment-category category-quiz bg-white px-3 py-2 rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Quiz (15 marks)</span>
+                        </div>
+                        <div class="assignment-category category-assignment bg-white px-3 py-2 rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Assignment (5 marks)</span>
+                        </div>
+                        <div class="assignment-category category-attendance bg-white px-3 py-2 rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Attendance (7 marks)</span>
+                        </div>
+                        <div class="assignment-category category-presentation bg-white px-3 py-2 rounded-lg">
+                            <span class="text-sm font-medium text-gray-700">Presentation (8 marks)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gradebook Table -->
+                <div class="overflow-x-auto">
+                    <table class="gradebook-table w-full">
+                        <thead class="sticky-header bg-gray-100">
+                            <tr>
+                                <th class="sticky-column px-4 py-3 text-left font-semibold text-gray-700 min-w-48">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="mr-2">
+                                        Student Name
+                                        <button onclick="sortBy('name')" class="ml-2 text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-sort"></i>
+                                        </button>
+                                    </div>
+                                </th>
+
+                                <!-- Exam Columns -->
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-red-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Midterm Exam</div>
+                                    </div>
+                                </th>
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-red-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Final Exam</div>
+                                    </div>
+                                </th>
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-red-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Quiz 1</div>
+                                    </div>
+                                </th>
+
+                                <!-- Quiz Columns -->
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-yellow-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Quiz 2</div>
+                                    </div>
+                                </th>
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-yellow-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Quiz 3</div>
+                                    </div>
+                                </th>
+                                <!-- Extra Columns -->
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-green-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Assignment</div>
+                                    </div>
+                                </th>
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-purple-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Presentation</div>
+                                    </div>
+                                </th>
+                                <th class="grade-cell px-2 py-3 text-center font-semibold text-gray-700 bg-blue-50">
+                                    <div class="assignment-header">
+                                        <div class="font-semibold">Attendance</div>
+                                    </div>
+                                </th>
+
+                                <!-- Homework Columns Removed -->
+
+                                <!-- Project Column Removed -->
+
+                                <!-- Overall Grade column removed -->
+
+                                <!-- Actions -->
+                                <th class="px-4 py-3 text-center font-semibold text-gray-700 min-w-32">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradebookBody">
+                            <!-- Student rows will be generated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analyticsView" class="hidden space-y-6">
+                <div class="flex items-center justify-center h-64">
+                    <span class="text-gray-500 text-lg font-semibold">No analytics available</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Assignment Modal -->
+        <div id="addAssignmentModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800">Add New Assignment</h3>
+                    </div>
+                    <div class="p-6">
+                        <form id="addAssignmentForm">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Assignment Name</label>
+                                    <input type="text" id="assignmentName"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                                        required placeholder="Enter assignment name" title="Assignment Name">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <select id="assignmentCategory"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                                        required title="Assignment Category">
+                                        <option value="">Select Category</option>
+                                        <option value="exam">Exam</option>
+                                        <option value="quiz">Quiz</option>
+                                        <option value="homework">Homework</option>
+                                        <option value="project">Project</option>
+                                        <option value="participation">Participation</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Total Points</label>
+                                    <input type="number" id="assignmentPoints"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                                        required placeholder="Total points" title="Total Points">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
+                                    <input type="date" id="assignmentDueDate"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                                        required placeholder="Due date" title="Due Date">
+                                </div>
+                            </div>
+                            <div class="flex gap-4 mt-6">
+                                <button type="button" onclick="closeAddAssignment()"
+                                    class="flex-1 bg-gray-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="submit"
+                                    class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                                    Add Assignment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script>
+        // Mock data for three courses
+        const courseData = {
+            web: {
+                name: 'Web Engineering',
+                session: 'Fall 2024',
+                students: [
+                    { id: 1, name: "Abu Zahed", email: "abu.zahed@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 2, name: "Nurjahan Akther Mim", email: "nurjahan.mim@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 3, name: "Amir Hamja", email: "amir.hamja@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 4, name: "Arnub Datta", email: "arnub.datta@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } }
+                ]
+            },
+            iot: {
+                name: 'IoT',
+                session: 'Spring 2025',
+                students: [
+                    { id: 1, name: "Abu Zahed", email: "abu.zahed@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 2, name: "Nurjahan Akther Mim", email: "nurjahan.mim@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 3, name: "Amir Hamja", email: "amir.hamja@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 4, name: "Arnub Datta", email: "arnub.datta@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } }
+                ]
+            },
+            software: {
+                name: 'Software Engineering',
+                session: 'Summer 2025',
+                students: [
+                    { id: 1, name: "Abu Zahed", email: "abu.zahed@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 2, name: "Nurjahan Akther Mim", email: "nurjahan.mim@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 3, name: "Amir Hamja", email: "amir.hamja@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } },
+                    { id: 4, name: "Arnub Datta", email: "arnub.datta@diu.edu.bd", grades: { midterm: 22, final: 32, quiz1: 12, quiz2: 13, quiz3: 12, assignment: 4, presentation: 6, attendance: 5 } }
+                ]
+            }
+        };
+
+        let currentCourse = 'web';
+        let students = courseData[currentCourse].students;
+        let filteredStudents = [...students];
+        let currentView = 'table';
+        let selectedStudents = [];
+
+        function changeCourse() {
+            const select = document.getElementById('courseSelect');
+            currentCourse = select.value;
+            students = courseData[currentCourse].students;
+            filteredStudents = [...students];
+            document.querySelector('.text-lg.font-bold.text-gray-800').textContent = 'Gradebook';
+            document.getElementById('courseSession').textContent = `- ${courseData[currentCourse].session}`;
+            renderGradebookTable();
+            updateCharts();
+            renderAssignmentAnalysis();
+        }
+
+        // Initialize the gradebook
+        function initializeGradebook() {
+            // Set initial course session
+            document.getElementById('courseSession').textContent = `- ${courseData[currentCourse].session}`;
+            renderGradebookTable();
+            initializeCharts();
+            renderAssignmentAnalysis();
+        }
+
+        function renderGradebookTable() {
+            const tbody = document.getElementById('gradebookBody');
+            tbody.innerHTML = '';
+
+            filteredStudents.forEach(student => {
+                const overall = calculateOverallGrade(student.grades);
+                const gradeClass = getGradeClass(overall);
+                const row = document.createElement('tr');
+                row.className = 'student-row border-b border-gray-100';
+                row.style.verticalAlign = 'middle';
+                row.innerHTML = `
+                    <td class="sticky-column px-4 py-3">
+                        <div class="flex items-center">
+                            <div>
+                                <div class="font-medium text-gray-900">${student.name}</div>
+                                <div class="text-sm text-gray-500">${student.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.midterm || ''}" min="0" max="100" placeholder="-">
+                    </td>
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.final || ''}" min="0" max="150" placeholder="-">
+                    </td>
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.quiz1 || ''}" min="0" max="25" placeholder="-">
+                    </td>
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.quiz2 || ''}" min="0" max="25" placeholder="-">
+                    </td>
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.quiz3 || ''}" min="0" max="25" placeholder="-">
+                    </td>
+                    <!-- Extra Columns -->
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.assignment || ''}" min="0" max="100" placeholder="-">
+                    </td>
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.presentation || ''}" min="0" max="100" placeholder="-">
+                    </td>
+                    <td class="grade-cell px-2 py-3 text-center">
+                        <input type="number" class="grade-input" style="margin: 0 4px;" value="${student.grades.attendance || ''}" min="0" max="100" placeholder="-">
+                    </td>
+                    <!-- Project Column Removed -->
+                    <!-- Overall Grade cell removed -->
+                    <td class="px-4 py-3 text-center">
+                        <div class="flex justify-center gap-1">
+                            <button class="text-blue-600 hover:text-blue-800 p-1" title="Email Student">
+                                <i class="fas fa-envelope"></i>
+                            </button>
+                            <button class="text-green-600 hover:text-green-800 p-1" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="text-yellow-600 hover:text-yellow-800 p-1" title="Add Comment">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function calculateOverallGrade(grades) {
+
+            const weights = {
+                exam: 0.65,
+                quizzes: 0.15,
+                assignment: 0.05,
+                attendance: 0.07,
+                presentation: 0.08
+            };
+
+            // Exam: average of midterm and final, both normalized to 100
+            let examTotal = 0, examCount = 0;
+            if (grades.midterm !== undefined && grades.midterm !== null) {
+                examTotal += grades.midterm;
+                examCount++;
+            }
+            if (grades.final !== undefined && grades.final !== null) {
+                examTotal += (grades.final / 150) * 100;
+                examCount++;
+            }
+            let examAvg = examCount > 0 ? examTotal / examCount : 0;
+
+            // Quizzes: average of 3 quizzes, each normalized to 100
+            let quizTotal = 0, quizCount = 0;
+            if (grades.quiz1 !== undefined && grades.quiz1 !== null) {
+                quizTotal += (grades.quiz1 / 25) * 100;
+                quizCount++;
+            }
+            if (grades.quiz2 !== undefined && grades.quiz2 !== null) {
+                quizTotal += (grades.quiz2 / 25) * 100;
+                quizCount++;
+            }
+            if (grades.quiz3 !== undefined && grades.quiz3 !== null) {
+                quizTotal += (grades.quiz3 / 25) * 100;
+                quizCount++;
+            }
+            let quizAvg = quizCount > 0 ? quizTotal / quizCount : 0;
+
+            // Assignment
+            let assignmentScore = (grades.assignment !== undefined && grades.assignment !== null) ? (grades.assignment / 100) * 100 : 0;
+
+            // Attendance
+            let attendanceScore = (grades.attendance !== undefined && grades.attendance !== null) ? (grades.attendance / 100) * 100 : 0;
+
+            // Presentation
+            let presentationScore = (grades.presentation !== undefined && grades.presentation !== null) ? (grades.presentation / 100) * 100 : 0;
+
+            // Final weighted grade
+            return (examAvg * weights.exam) + (quizAvg * weights.quizzes) +
+                (assignmentScore * weights.assignment) + (attendanceScore * weights.attendance) +
+                (presentationScore * weights.presentation);
+        }
+
+        function getGradeClass(grade) {
+            if (grade >= 90) return 'grade-a';
+            if (grade >= 80) return 'grade-b';
+            if (grade >= 70) return 'grade-c';
+            if (grade >= 60) return 'grade-d';
+            return 'grade-f';
+        }
+
+        function getGradeTrend(studentId) {
+            // Simulate trend calculation
+            const trends = [
+                { class: 'grade-trend-up', icon: 'fa-arrow-up', text: '+2.1%' },
+                { class: 'grade-trend-down', icon: 'fa-arrow-down', text: '-1.5%' },
+                { class: 'text-gray-500', icon: 'fa-minus', text: 'No change' }
+            ];
+            return trends[studentId % 3];
+        }
+
+        // Removed updateGrade interaction
+
+        // Filter functions
+        function filterStudents() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            filteredStudents = students.filter(student =>
+                student.name.toLowerCase().includes(searchTerm) ||
+                student.email.toLowerCase().includes(searchTerm)
+            );
+            renderGradebookTable();
+            updateActiveFilters();
+        }
+
+        function filterByCategory() {
+            const category = document.getElementById('categoryFilter').value;
+            // This would filter assignments by category in a real implementation
+            updateActiveFilters();
+        }
+
+        function filterByGrade() {
+            const gradeRange = document.getElementById('gradeFilter').value;
+            if (!gradeRange) {
+                filteredStudents = [...students];
+            } else {
+                filteredStudents = students.filter(student => {
+                    const overall = calculateOverallGrade(student.grades);
+                    switch (gradeRange) {
+                        case 'A': return overall >= 90;
+                        case 'B': return overall >= 80 && overall < 90;
+                        case 'C': return overall >= 70 && overall < 80;
+                        case 'D': return overall >= 60 && overall < 70;
+                        case 'F': return overall < 60;
+                        default: return true;
+                    }
+                });
+            }
+            renderGradebookTable();
+            updateActiveFilters();
+        }
+
+        function updateActiveFilters() {
+            const activeFilters = document.getElementById('activeFilters');
+            const filters = [];
+
+            const search = document.getElementById('studentSearch').value;
+            const category = document.getElementById('categoryFilter').value;
+            const grade = document.getElementById('gradeFilter').value;
+
+            if (search) filters.push(`Search: "${search}"`);
+            if (category) filters.push(`Category: ${category}`);
+            if (grade) filters.push(`Grade: ${grade}`);
+
+            if (filters.length > 0) {
+                activeFilters.style.display = 'flex';
+                activeFilters.innerHTML = filters.map(filter =>
+                    `<span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">${filter}</span>`
+                ).join('');
+            } else {
+                activeFilters.style.display = 'none';
+            }
+        }
+
+        // View toggle
+        function toggleView(view) {
+            // Always show table view, never show analytics view
+            currentView = 'table';
+            document.getElementById('tableView').classList.remove('hidden');
+            document.getElementById('analyticsView').classList.add('hidden');
+            document.getElementById('tableViewBtn').className = 'filter-badge text-white px-3 py-2 rounded-lg text-sm font-medium';
+            document.getElementById('analyticsViewBtn').className = 'bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition-colors';
+        }
+
+
+        // Student selection
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+                toggleStudentSelection(parseInt(checkbox.value), false);
+            });
+        }
+
+        function toggleStudentSelection(studentId, updateSelectAll = true) {
+            if (selectedStudents.includes(studentId)) {
+                selectedStudents = selectedStudents.filter(id => id !== studentId);
+            } else {
+                selectedStudents.push(studentId);
+            }
+
+            if (updateSelectAll) {
+                const selectAll = document.getElementById('selectAll');
+                selectAll.checked = selectedStudents.length === filteredStudents.length;
+            }
+        }
+
+        // Actions
+        // Removed exportGrades interaction
+
+        // Removed showAddAssignment and closeAddAssignment interactions
+
+        // Removed emailStudent, viewStudentDetails, addComment interactions
+
+        // Removed sortBy interaction
+
+        // Removed toggleBulkActions interaction
+
+        // Form submission
+        // Removed addAssignmentForm submit interaction
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializeGradebook);
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'95cf1867420a4e9f',t:'MTc1MjE0MDM4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

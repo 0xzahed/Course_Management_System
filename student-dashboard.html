@@ -277,7 +277,7 @@
                 <!-- Divider -->
                 <div class="border-t border-gray-200 my-4"></div>
 
-                <a href="#"
+                <a href="course-enroll.html"
                     class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900">
                     <i class="fas fa-plus-circle mr-3 text-lg"></i>
                     Enroll Course
@@ -391,7 +391,7 @@
                             <div class="p-6">
                                 <div class="space-y-4">
                                     <!-- Course 1: Web Engineering -->
-                                    <div
+                                    <div onclick="window.location.href='course-details.html'"
                                         class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer">
                                         <div class="flex items-center">
                                             <div
@@ -482,7 +482,7 @@
                                                 <p class="text-sm text-gray-600">Web Engineering • Due in 2 days</p>
                                             </div>
                                         </div>
-                                        <button
+                                        <button onclick="window.location.href='assignment-submit.html'"
                                             class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
                                             Submit
                                         </button>
@@ -498,7 +498,7 @@
                                                 <p class="text-sm text-gray-600">Embedded System • Due in 5 days</p>
                                             </div>
                                         </div>
-                                        <button
+                                        <button onclick="window.location.href='assignment-submit.html'"
                                             class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm font-medium">
                                             Submit
                                         </button>
@@ -515,7 +515,7 @@
                                                 </p>
                                             </div>
                                         </div>
-                                        <button
+                                        <button onclick="window.location.href='assignment-submit.html'"
                                             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
                                             Submit
                                         </button>
@@ -576,7 +576,7 @@
                                                 days</span>
                                         </div>
                                         <p class="text-sm text-gray-600 mb-3">Duration: 30 minutes • MCQ</p>
-                                        <button
+                                        <button onclick="window.location.href='exam-quiz.html'"
                                             class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm font-medium">
                                             Review Materials
                                         </button>
@@ -669,6 +669,11 @@
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.addEventListener('click', function (e) {
+                // Allow navigation for links with actual href (not #)
+                if (this.getAttribute('href') && this.getAttribute('href') !== '#') {
+                    return; // Allow default navigation
+                }
+
                 e.preventDefault();
 
                 // Remove active class from all items
