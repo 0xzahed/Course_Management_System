@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Assignments - EduPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .assignment-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            border-left-color: #667eea;
+        }
+
+        .status-active {
+            border-left-color: #10b981;
+        }
+
+        .status-draft {
+            border-left-color: #f59e0b;
+        }
+
+        .status-closed {
+            border-left-color: #ef4444;
+        }
+
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- No separate back arrow at the top -->
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <button onclick="window.location.href='teacher-dashboard.html'"
+                        class="mr-2 text-indigo-600 hover:text-indigo-800 focus:outline-none">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </button>
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-university text-white text-lg"></i>
+                    </div>
+                    <div class="ml-3">
+                        <span
+                            class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">EduPro</span>
+                        <p class="text-xs text-gray-500 -mt-1">Instructor Dashboard</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button onclick="createNewAssignment()"
+                        class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all">
+                        <i class="fas fa-plus mr-2"></i>New Assignment
+                    </button>
+                    <div class="flex items-center">
+                        <div
+                            class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                            I
+                        </div>
+                        <span class="ml-2 text-gray-700 font-medium">Instructor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8 fade-in">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">My Assignments</h1>
+            <p class="text-gray-600">Manage and track all your assignments in one place</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 fade-in">
+            <div class="stats-card text-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-indigo-100 text-sm font-medium">Total Assignments</p>
+                        <p class="text-3xl font-bold">24</p>
+                    </div>
+                    <i class="fas fa-tasks text-3xl text-indigo-200"></i>
+                </div>
+            </div>
+
+            <div class="bg-green-500 text-white rounded-xl p-6 shadow-lg hover:bg-green-600 transition-colors">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-green-100 text-sm font-medium">Active</p>
+                        <p class="text-3xl font-bold">18</p>
+                    </div>
+                    <i class="fas fa-play-circle text-3xl text-green-200"></i>
+                </div>
+            </div>
+
+            <div class="bg-yellow-500 text-white rounded-xl p-6 shadow-lg hover:bg-yellow-600 transition-colors">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-yellow-100 text-sm font-medium">Drafts</p>
+                        <p class="text-3xl font-bold">4</p>
+                    </div>
+                    <i class="fas fa-edit text-3xl text-yellow-200"></i>
+                </div>
+            </div>
+
+            <div class="bg-red-500 text-white rounded-xl p-6 shadow-lg hover:bg-red-600 transition-colors">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-red-100 text-sm font-medium">Closed</p>
+                        <p class="text-3xl font-bold">2</p>
+                    </div>
+                    <i class="fas fa-lock text-3xl text-red-200"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100 mb-8 fade-in">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterAssignments('all')"
+                        class="filter-btn active px-4 py-2 rounded-lg font-medium transition-all">
+                        All Assignments
+                    </button>
+                    <button onclick="filterAssignments('active')"
+                        class="filter-btn px-4 py-2 rounded-lg font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all">
+                        Active
+                    </button>
+                    <button onclick="filterAssignments('draft')"
+                        class="filter-btn px-4 py-2 rounded-lg font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all">
+                        Drafts
+                    </button>
+                    <button onclick="filterAssignments('closed')"
+                        class="filter-btn px-4 py-2 rounded-lg font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all">
+                        Closed
+                    </button>
+                </div>
+
+                <div class="flex gap-4">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Search assignments..."
+                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+                    </div>
+                    <select
+                        class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors">
+                        <option>All Courses</option>
+                        <option>Data Structures & Algorithms</option>
+                        <option>Machine Learning</option>
+                        <option>Web Development</option>
+                        <option>Database Systems</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignments List -->
+        <div class="space-y-6" id="assignmentsList">
+            <!-- Active Assignment -->
+            <div class="assignment-card status-active bg-white rounded-xl p-6 shadow-lg border border-gray-100 fade-in">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <h3 class="text-xl font-bold text-gray-800">Data Structures Implementation Project</h3>
+                            <span
+                                class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Active</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-book mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Data Structures & Algorithms</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-calendar mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Due: March 25, 2024</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-users mr-2 text-indigo-500"></i>
+                                <span class="text-sm">156 students</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-star mr-2 text-indigo-500"></i>
+                                <span class="text-sm">100 points</span>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-700 mb-4">Implement various data structures including linked lists, stacks,
+                            queues, and binary trees with comprehensive testing.</p>
+
+                        <div class="flex items-center gap-6 text-sm">
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <span>45 submitted</span>
+                            </div>
+                            <div class="flex items-center text-yellow-600">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span>111 pending</span>
+                            </div>
+                            <div class="flex items-center text-blue-600">
+                                <i class="fas fa-eye mr-2"></i>
+                                <span>23 graded</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 lg:ml-6">
+                        <button onclick="viewAssignment('1')"
+                            class="action-btn bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-eye mr-2"></i>View Details
+                        </button>
+                        <button onclick="viewSubmissions('1')"
+                            class="action-btn bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            <i class="fas fa-list mr-2"></i>Submissions (45)
+                        </button>
+                        <button onclick="editAssignment('1')"
+                            class="action-btn bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-edit mr-2"></i>Edit
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draft Assignment -->
+            <div class="assignment-card status-draft bg-white rounded-xl p-6 shadow-lg border border-gray-100 fade-in">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <h3 class="text-xl font-bold text-gray-800">Machine Learning Research Paper</h3>
+                            <span
+                                class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">Draft</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-book mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Machine Learning</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-calendar mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Due: April 10, 2024</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-users mr-2 text-indigo-500"></i>
+                                <span class="text-sm">89 students</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-star mr-2 text-indigo-500"></i>
+                                <span class="text-sm">150 points</span>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-700 mb-4">Research paper on recent advances in deep learning with practical
+                            implementation and analysis.</p>
+
+                        <div class="flex items-center gap-6 text-sm">
+                            <div class="flex items-center text-gray-500">
+                                <i class="fas fa-edit mr-2"></i>
+                                <span>Last edited: 2 days ago</span>
+                            </div>
+                            <div class="flex items-center text-gray-500">
+                                <i class="fas fa-save mr-2"></i>
+                                <span>Auto-saved</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 lg:ml-6">
+                        <button onclick="editAssignment('2')"
+                            class="action-btn bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-edit mr-2"></i>Continue Editing
+                        </button>
+                        <button onclick="publishAssignment('2')"
+                            class="action-btn bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            <i class="fas fa-paper-plane mr-2"></i>Publish
+                        </button>
+                        <button onclick="deleteAssignment('2')"
+                            class="action-btn bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash mr-2"></i>Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Assignment 2 -->
+            <div class="assignment-card status-active bg-white rounded-xl p-6 shadow-lg border border-gray-100 fade-in">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <h3 class="text-xl font-bold text-gray-800">Web Development Portfolio</h3>
+                            <span
+                                class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Active</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-book mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Web Development</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-calendar mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Due: March 30, 2024</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-users mr-2 text-indigo-500"></i>
+                                <span class="text-sm">72 students</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-star mr-2 text-indigo-500"></i>
+                                <span class="text-sm">200 points</span>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-700 mb-4">Create a professional portfolio website showcasing your web
+                            development skills using modern frameworks.</p>
+
+                        <div class="flex items-center gap-6 text-sm">
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <span>28 submitted</span>
+                            </div>
+                            <div class="flex items-center text-yellow-600">
+                                <i class="fas fa-clock mr-2"></i>
+                                <span>44 pending</span>
+                            </div>
+                            <div class="flex items-center text-blue-600">
+                                <i class="fas fa-eye mr-2"></i>
+                                <span>15 graded</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 lg:ml-6">
+                        <button onclick="viewAssignment('3')"
+                            class="action-btn bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-eye mr-2"></i>View Details
+                        </button>
+                        <button onclick="viewSubmissions('3')"
+                            class="action-btn bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                            <i class="fas fa-list mr-2"></i>Submissions (28)
+                        </button>
+                        <button onclick="editAssignment('3')"
+                            class="action-btn bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-yellow-700 transition-colors">
+                            <i class="fas fa-edit mr-2"></i>Edit
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Closed Assignment -->
+            <div
+                class="assignment-card status-closed bg-white rounded-xl p-6 shadow-lg border border-gray-100 fade-in opacity-75">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <h3 class="text-xl font-bold text-gray-800">Database Design Project</h3>
+                            <span
+                                class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">Closed</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-book mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Database Systems</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-calendar mr-2 text-indigo-500"></i>
+                                <span class="text-sm">Closed: March 15, 2024</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-users mr-2 text-indigo-500"></i>
+                                <span class="text-sm">134 students</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-star mr-2 text-indigo-500"></i>
+                                <span class="text-sm">120 points</span>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-700 mb-4">Design and implement a complete database system for a real-world
+                            application with proper normalization.</p>
+
+                        <div class="flex items-center gap-6 text-sm">
+                            <div class="flex items-center text-green-600">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                <span>134 submitted</span>
+                            </div>
+                            <div class="flex items-center text-blue-600">
+                                <i class="fas fa-chart-bar mr-2"></i>
+                                <span>All graded</span>
+                            </div>
+                            <div class="flex items-center text-purple-600">
+                                <i class="fas fa-trophy mr-2"></i>
+                                <span>Avg: 87.5%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 lg:ml-6">
+                        <button onclick="viewAssignment('4')"
+                            class="action-btn bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-eye mr-2"></i>View Details
+                        </button>
+                        <button onclick="viewResults('4')"
+                            class="action-btn bg-purple-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-chart-bar mr-2"></i>View Results
+                        </button>
+                        <button onclick="exportGrades('4')"
+                            class="action-btn bg-gray-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-download mr-2"></i>Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="text-center mt-12">
+            <button onclick="loadMoreAssignments()"
+                class="bg-gray-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>Load More Assignments
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Filter assignments
+        function filterAssignments(filter) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+            });
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            event.target.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+
+            // Filter logic would go here
+            alert(`Filtering assignments by: ${filter}`);
+        }
+
+        // Action functions
+        function createNewAssignment() {
+            alert('Redirecting to assignment creation page...');
+        }
+
+        function viewAssignment(id) {
+            alert(`Opening detailed view for assignment ${id}. You would see:
+            
+✅ Complete assignment details
+✅ Student submission statistics  
+✅ Grading progress
+✅ Due date and requirements
+✅ Attached files and resources
+✅ Student questions and comments`);
+        }
+
+        function viewSubmissions(id) {
+            alert(`Opening submissions page for assignment ${id}. You would see:
+            
+📋 List of all student submissions
+📊 Submission timeline and statistics
+✅ Submitted vs pending students
+📝 Quick grading interface
+💬 Student comments and questions
+📎 Submitted files and attachments`);
+        }
+
+        function editAssignment(id) {
+            alert(`Opening assignment editor for assignment ${id}. You can modify:
+            
+✏️ Assignment title and description
+📅 Due dates and deadlines
+📋 Requirements and instructions
+📎 Attached files and resources
+🎯 Grading criteria and points
+👥 Student access and visibility`);
+        }
+
+        function publishAssignment(id) {
+            if (confirm('Are you sure you want to publish this assignment? Students will be notified immediately.')) {
+                alert(`Assignment ${id} published successfully! 
+                
+✅ Students have been notified via email
+✅ Assignment is now visible to all enrolled students
+✅ Submission portal is now active
+✅ Due date reminders are scheduled`);
+            }
+        }
+
+        function deleteAssignment(id) {
+            if (confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
+                alert(`Assignment ${id} deleted successfully. It has been moved to trash and can be recovered within 30 days.`);
+            }
+        }
+
+        function viewResults(id) {
+            alert(`Opening results dashboard for assignment ${id}. You would see:
+            
+📊 Grade distribution and statistics
+📈 Performance analytics
+🏆 Top performing students
+📉 Students needing help
+📋 Detailed grade breakdown
+📄 Exportable reports`);
+        }
+
+        function exportGrades(id) {
+            alert(`Exporting grades for assignment ${id}:
+            
+📄 CSV file with all student grades
+📊 Excel file with detailed analytics
+📈 PDF report with statistics
+📋 Grade book compatible format
+            
+Download will start automatically...`);
+        }
+
+        function loadMoreAssignments() {
+            alert('Loading more assignments... You would see additional assignments from previous semesters and archived assignments.');
+        }
+
+        // Search functionality
+        document.querySelector('input[placeholder="Search assignments..."]').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            // Search logic would filter assignments based on title, course, or description
+        });
+
+        // Auto-refresh assignment stats every 30 seconds
+        setInterval(function () {
+            // This would refresh submission counts and statistics in real-time
+        }, 30000);
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'95b98893a75c4ea4',t:'MTc1MTkxNDI4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
